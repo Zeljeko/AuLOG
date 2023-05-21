@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "aulog";
+$database = "aulog_database";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);
