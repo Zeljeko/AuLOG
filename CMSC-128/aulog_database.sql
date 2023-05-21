@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 20, 2023 at 05:17 PM
+-- Generation Time: May 21, 2023 at 02:38 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.0.13
 
@@ -41,19 +41,12 @@ CREATE TABLE `admin` (
 
 CREATE TABLE `charging_log` (
   `log_id` int(11) NOT NULL,
-  `student_number` varchar(9) NOT NULL,
+  `student_number` varchar(12) NOT NULL,
   `tag_number` int(11) NOT NULL,
   `time_in` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `time_out` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `time_out` timestamp NOT NULL DEFAULT current_timestamp(),
   `state` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `charging_log`
---
-
-INSERT INTO `charging_log` (`log_id`, `student_number`, `tag_number`, `time_in`, `time_out`, `state`) VALUES
-(1, '2020-1234', 1, '2023-05-20 14:47:17', '0000-00-00 00:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -73,19 +66,12 @@ CREATE TABLE `constants` (
 --
 
 CREATE TABLE `student` (
-  `student_number` varchar(9) NOT NULL,
+  `student_number` varchar(12) NOT NULL,
   `first_name` text NOT NULL,
   `last_name` text NOT NULL,
   `email` text NOT NULL,
   `charge_consumed` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `student`
---
-
-INSERT INTO `student` (`student_number`, `first_name`, `last_name`, `email`, `charge_consumed`) VALUES
-('2020-1234', 'Benjamin', 'Banaga', 'babanaga@up.edu.ph', 125);
 
 --
 -- Indexes for dumped tables
@@ -118,7 +104,7 @@ ALTER TABLE `student`
 -- Constraints for table `charging_log`
 --
 ALTER TABLE `charging_log`
-  ADD CONSTRAINT `charging_log_ibfk_1` FOREIGN KEY (`student_number`) REFERENCES `student` (`student_number`);
+  ADD CONSTRAINT `Foreign Key` FOREIGN KEY (`student_number`) REFERENCES `student` (`student_number`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
