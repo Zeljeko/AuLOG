@@ -27,7 +27,7 @@
                     <span>Dashboard</span></a>
                 </li>
                 <li>
-                    <a href="student.php" class="active"><span class="las la-users"></span>
+                    <a href="admin.php" class="active"><span class="las la-users"></span>
                     <span>Admin</span></a>
                 </li>
             </ul>
