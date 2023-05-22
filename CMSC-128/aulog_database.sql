@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 21, 2023 at 02:38 PM
+-- Generation Time: May 22, 2023 at 01:20 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.0.13
 
@@ -48,6 +48,10 @@ CREATE TABLE `charging_log` (
   `state` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `charging_log`
+--
+
 -- --------------------------------------------------------
 
 --
@@ -55,9 +59,13 @@ CREATE TABLE `charging_log` (
 --
 
 CREATE TABLE `constants` (
-  `charging_time` time NOT NULL,
-  `total_tags` int(11) NOT NULL
+  `constant_id` text DEFAULT NULL,
+  `value` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `constants`
+--
 
 -- --------------------------------------------------------
 
@@ -72,6 +80,10 @@ CREATE TABLE `student` (
   `email` text NOT NULL,
   `charge_consumed` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `student`
+--
 
 --
 -- Indexes for dumped tables

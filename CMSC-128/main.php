@@ -107,7 +107,7 @@
                             <thead>
                                 <tr>
                                     <td>Name</td>
-                                    <td>Charge Consumed</td>
+                                    <td>Remaining Charge</td>
                                     <td>Time Elapsed</td>
                                 </tr>
                             </thead>
@@ -129,15 +129,18 @@
                                 }
 
                                 // query for active usere
-                                $sql = "SELECT first_name, last_name, charge_consumed FROM student JOIN charging_log
+                                $sql_a = "SELECT first_name, last_name, charge_consumed FROM student JOIN charging_log
                                 ON student.student_number = charging_log.student_number
                                 WHERE state = 1";
-                                $result = mysqli_query($conn, $sql);
+                                $result_a = mysqli_query($conn, $sql_a);
+
+                                $sql_b = "SELECT value FROM constants WHERE constant_id = 'charging_time'";
+                                $result_b = mysqli_fetch_assoc(mysqli_query($conn, $sql_b));
                                 
                                 // display active user
-                                while($row = mysqli_fetch_assoc($result)) {
-                                    $hours = intdiv($row['charge_consumed'],60);
-                                    $minutes = $row['charge_consumed'] % 60;
+                                while($row = mysqli_fetch_assoc($result_a)) {
+                                    $hours = intdiv($result_b['value'] - $row['charge_consumed'],60);
+                                    $minutes = ($result_b['value'] - $row['charge_consumed']) % 60;
 
                                     echo "<tr>";
                                     echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
