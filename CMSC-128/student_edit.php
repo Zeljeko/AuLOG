@@ -68,19 +68,8 @@
 
                 <!-- edit functionallity -->
                 <div class="card-body">
-                    <?php           
-                    $servername = "localhost";
-                    $username = "root";
-                    $password = "";
-                    $database = "aulog_database";
-                            
-                    // Create connection
-                    $conn = new mysqli($servername, $username, $password, $database);
-
-                    // Check connection
-                    if ($conn->connect_error) {
-                        die("Connection failed: " . $conn->connect_error);
-                    }
+                    <?php       
+                    require 'functions.php';
 
                     if(isset($_POST["student_edit"])) { // perform edit query
                         // assign forwarded data to variables
@@ -95,18 +84,8 @@
                         $charge_consumed = ($hours * 60) + $minutes;
 
                         // update student info
-                        $sql = "UPDATE student
-                        SET first_name = '$first_name', last_name = '$last_name', student_number = '$student_number', email = '$email', charge_consumed = '$charge_consumed'
-                        WHERE student_number = '$condition'";
-
-                        if (mysqli_query($conn, $sql)) {
-                            echo "<script type='text/javascript'>alert('Edit successful.');
-                            window.location.href='student.php';</script>";
-                        } else {
-                            echo "<script type='text/javascript'>alert('Edit unsuccessful.');
-                            window.location.href='student.php';</script>";
-                        }
-                    } else { // output edit form interface
+                        editstudent($first_name, $last_name, $student_number, $email, $charge_consumed, $condition);    
+                    } else { // edit form
                         // assign received data to variables
                         $first_name = $_GET['first_name'];
                         $last_name = $_GET['last_name'];
@@ -114,51 +93,9 @@
                         $email = $_GET['email'];
                         $charge_consumed = $_GET['charge_consumed'];
 
-                        $hours = intdiv($charge_consumed,60);
-                        $minutes = $charge_consumed % 60;
-
-                        // form heading i
-                        echo "<form action='student_edit.php' target='_self' method='post'>";
-                        echo "<table width='100%'>";
-                        echo "<thead>";
-                        echo "<tr>";
-                        echo "<td>First Name</td>";
-                        echo "<td>Second Name</td>";
-                        echo "<td>Student No.</td>";
-                        echo "<td>Email Address</td>";
-                        echo "</tr>";
-                        echo "</thead>";
-                        
-                        // input fields i
-                        echo "<tbody> <tr>";
-                        echo "<td> <input type='text' id='first_name' name='first_name' value='".$first_name."'/> </td>";
-                        echo "<td> <input type='text' id='last_name' name='last_name' value='".$last_name."'/> </td>";
-                        echo "<td> <input type='text' id='student_number' name='student_number' value='".$student_number."'/> </td>";
-                        echo "<td> <input type='text' id='email' name='email' value='".$email."'/> </td>";
-                        echo "</tr>";
-
-                        // form heading ii
-                        echo "<tr>";
-                        echo "<td>Hours</td>";
-                        echo "<td>Minutes</td>";
-                        echo "</tr>";
-
-                        // input fields ii
-                        echo "<tr>";
-                        echo "<td> <input type='number' id='hours' name='hours' value='".$hours."'/> </td>";
-                        echo "<td> <input type='number' id='minutes' name='minutes' value='".$minutes."'/> </td>";
-                        echo "</tr> </tbody>";
-                        echo "</table>";
-
-                        echo "<input type='hidden' id='condition' name='condition' value='".$student_number."'/>";
-
-                        // forward data to self
-                        echo "<br/><input type='submit' name='student_edit' formmethod='post' value='Apply'>";
-                        echo "</form>";
+                        // output edit form interface
+                        editStudentForm($first_name, $last_name, $student_number, $email, $charge_consumed);
                     }
-
-                    // close connection
-                    mysqli_close($conn);
                     ?>
                 </div>
             </div>

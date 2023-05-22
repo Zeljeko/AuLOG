@@ -116,6 +116,7 @@
                             <!-- table content -->
                             <tbody>   
                             <?php
+                                require 'functions.php';
                                 $servername = "localhost";
                                 $username = "root";
                                 $password = "";
@@ -135,14 +136,11 @@
                                 ON student.student_number = charging_log.student_number
                                 WHERE state = 1";
                                 $result_a = mysqli_query($conn, $sql_a);
-
-                                $sql_b = "SELECT value FROM constants WHERE constant_id = 'charging_time'";
-                                $result_b = mysqli_fetch_assoc(mysqli_query($conn, $sql_b));
                                 
                                 // display active user
                                 while($row = mysqli_fetch_assoc($result_a)) {
-                                    $hours = intdiv($result_b['value'] - $row['charge_consumed'],60);
-                                    $minutes = ($result_b['value'] - $row['charge_consumed']) % 60;
+                                    $hours = intdiv(getRemainingCharge($row['charge_consumed']), 60);
+                                    $minutes = getRemainingCharge($row['charge_consumed']) % 60;
 
                                     $diff_hours = intdiv($row['difference'], 60);
                                     $dif_minutes = $row['difference'] % 60;

@@ -86,25 +86,11 @@
                             <!-- table body -->
                             <tbody>
                             <?php
-                                $servername = "localhost";
-                                $username = "root";
-                                $password = "";
-                                $database = "aulog_database";
-                                
-                                // Create connection
-                                $conn = new mysqli($servername, $username, $password, $database);
-
-                                // Check connection
-                                if ($conn->connect_error) {
-                                    die("Connection failed: " . $conn->connect_error);
-                                }
-
-                                // query for log info
-                                $sql = "SELECT * FROM charging_log";
-                                $result = mysqli_query($conn, $sql);
+                                require 'functions.php';
+                                $result = getChargingLog();
 
                                 // log info rows
-                                while($row = mysqli_fetch_assoc($result)) {
+                                foreach($result AS $row) {
                                     if($row['state'] == '0')
                                         $log_state = "inactive";
                                     else
@@ -128,9 +114,6 @@
                                     "'>Delete</a></td>";
                                     echo "</tr>";
                                 }
-
-                                // close connection
-                                mysqli_close($conn);
                             ?>
                             </tbody>
                         </table>

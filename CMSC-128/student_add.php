@@ -69,18 +69,7 @@
                 <!-- add functionality -->
                 <div class="card-body">
                     <?php           
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "";
-                        $database = "aulog_database";
-                                
-                        // Create connection
-                        $conn = new mysqli($servername, $username, $password, $database);
-
-                        // Check connection
-                        if ($conn->connect_error) {
-                            die("Connection failed: " . $conn->connect_error);
-                        }
+                        include 'functions.php';
 
                         if(isset($_POST["student_add"])) {
                             // assigning forwarded data to variables
@@ -89,17 +78,8 @@
                             $student_number = $_POST["student_number"];
                             $email = $_POST["email"];
                             
-                            // inserting studeing info
-                            $sql = "INSERT INTO student (first_name, last_name, student_number, email, charge_consumed) 
-                                    VALUES ('$first_name', '$last_name', '$student_number', '$email', '0')";
-                            
-                            if (mysqli_query($conn, $sql)) {
-                                echo "<script type='text/javascript'>alert('Entry added. Redirecting you back to the admin page.');
-                                window.location.href='student.php';</script>";
-                            } else {
-                                echo "<script type='text/javascript'>alert('Cannot add entry.');
-                                window.location.href='student.php';</script>";
-                            }
+                            // inserting student info
+                            addstudent($first_name, $last_name, $student_number, $email);
                         } else {
                             // form heading
                             echo "<form action='student_add.php' target='_self' method='post'>";
@@ -125,9 +105,6 @@
                             echo "<br/><input type='submit' name='student_add' formmethod='post' value='Apply'>";
                             echo "</form>";
                         }
-
-                        // close connection
-                        mysqli_close($conn);
                     ?>
                 </div>
             </div>

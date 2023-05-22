@@ -68,20 +68,8 @@
 
                 <!-- add functionality -->
                 <div class="card-body">
-                    <?php           
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "";
-                        $database = "aulog_database";
-                                
-                        // Create connection
-                        $conn = new mysqli($servername, $username, $password, $database);
-
-                        // Check connection
-                        if ($conn->connect_error) {
-                            die("Connection failed: " . $conn->connect_error);
-                        }
-
+                    <?php
+                        require 'functions.php';           
                         if(isset($_POST["log_add"])) {
                             // assigning forwarded data to variables
                             $log_id = $_POST['log_id'];
@@ -91,63 +79,45 @@
                             $time_out = $_POST['time_out'];
                             $state = $_POST['state'];
 
-                            if($state == 'inactive')
-                                $log_state = 0;
-                            else
-                                $log_state = 1;
-                            
-                            // inserting studeing info
-                            $sql = "INSERT INTO charging_log (log_id, tag_number, student_number, time_in, time_out, state) 
-                                    VALUES ('$log_id', '$tag_number', '$student_number', '$time_in', '$time_out', $log_state)";
-                            
-                            if (mysqli_query($conn, $sql)) {
-                                echo "<script type='text/javascript'>alert('Entry added. Redirecting you back to the admin page.');
-                                window.location.href='log.php';</script>";
-                            } else {
-                                echo "<script type='text/javascript'>alert('Unable to add entry.');
-                                window.location.href='log.php';</script>";
-                            }
+                            addChargingLog($log_id, $tag_number, $student_number, $time_in, $time_out, $state);
                         } else {
-                        // form heading i
-                        echo "<form action='log_add.php' target='_self' method='post'>";
-                        echo "<table width='100%'>";
-                        echo "<thead>";
-                        echo "<tr>";
-                        echo "<td>LOG ID</td>";
-                        echo "<td>Tag No.</td>";
-                        echo "<td>Student No.</td>";
-                        echo "</tr>";
-                        echo "</thead>";
+                            // form heading i
+                            echo "<form action='log_add.php' target='_self' method='post'>";
+                            echo "<table width='100%'>";
+                            echo "<thead>";
+                            echo "<tr>";
+                            echo "<td>LOG ID</td>";
+                            echo "<td>Tag No.</td>";
+                            echo "<td>Student No.</td>";
+                            echo "</tr>";
+                            echo "</thead>";
                         
-                        // input fields i
-                        echo "<tbody> <tr>";
-                        echo "<td> <input type='text' id='log_id' name='log_id' value='0'/> </td>";
-                        echo "<td> <input type='int' id='tag_number' name='tag_number' value='0'/> </td>";
-                        echo "<td> <input type='text' id='student_number' name='student_number' value='XXXX-YYYYY'/> </td>";
-                        echo "</tr>";
+                            // input fields i
+                            echo "<tbody> <tr>";
+                            echo "<td> <input type='text' id='log_id' name='log_id' value='0'/> </td>";
+                            echo "<td> <input type='int' id='tag_number' name='tag_number' value='0'/> </td>";
+                            echo "<td> <input type='text' id='student_number' name='student_number' value='XXXX-YYYYY'/> </td>";
+                            echo "</tr>";
 
-                        // form heading ii
-                        echo "<tr>";
-                        echo "<td>Time in</td>";
-                        echo "<td>Time out</td>";
-                        echo "<td>State</td>";
-                        echo "</tr>";
+                            // form heading ii
+                            echo "<tr>";
+                            echo "<td>Time in</td>";
+                            echo "<td>Time out</td>";
+                            echo "<td>State</td>";
+                            echo "</tr>";
 
-                        // input fields ii
-                        echo "<tr>";
-                        echo "<td> <input type='text' id='time_in' name='time_in' value='YYYY-MM-DD HH:MM:SS'/> </td>";
-                        echo "<td> <input type='text' id='time_out' name='time_out' value='YYYY-MM-DD HH:MM:SS'/> </td>";
-                        echo "<td> <input type='text' id='state' name='state' value='active'/> </td>";
-                        echo "</tr> </tbody>";
-                        echo "</table>";
+                            // input fields ii
+                            echo "<tr>";
+                            echo "<td> <input type='text' id='time_in' name='time_in' value='YYYY-MM-DD HH:MM:SS'/> </td>";
+                            echo "<td> <input type='text' id='time_out' name='time_out' value='YYYY-MM-DD HH:MM:SS'/> </td>";
+                            echo "<td> <input type='text' id='state' name='state' value='active'/> </td>";
+                            echo "</tr> </tbody>";
+                            echo "</table>";
 
-                        // forward data to self
-                        echo "<br/><input type='submit' name='log_add' formmethod='post' value='Apply'>";
-                        echo "</form>";
+                            // forward data to self
+                            echo "<br/><input type='submit' name='log_add' formmethod='post' value='Apply'>";
+                            echo "</form>";
                         }
-
-                        // close connection
-                        mysqli_close($conn);
                     ?>
                 </div>
             </div>
