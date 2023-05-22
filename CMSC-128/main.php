@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="refresh" content="5">
         <title>UPB AuLOG</title>
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -129,7 +130,8 @@
                                 }
 
                                 // query for active usere
-                                $sql_a = "SELECT first_name, last_name, charge_consumed FROM student JOIN charging_log
+                                $sql_a = "SELECT first_name, last_name, charge_consumed, TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS difference
+                                FROM student JOIN charging_log
                                 ON student.student_number = charging_log.student_number
                                 WHERE state = 1";
                                 $result_a = mysqli_query($conn, $sql_a);
@@ -142,9 +144,13 @@
                                     $hours = intdiv($result_b['value'] - $row['charge_consumed'],60);
                                     $minutes = ($result_b['value'] - $row['charge_consumed']) % 60;
 
+                                    $diff_hours = intdiv($row['difference'], 60);
+                                    $dif_minutes = $row['difference'] % 60;
+
                                     echo "<tr>";
                                     echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
                                     echo "<td>".$hours." hours ".$minutes." minutes</td>";
+                                    echo "<td>".$diff_hours." hours ".$dif_minutes." minutes</td>";
                                     echo "</tr>";
                                 }
 
