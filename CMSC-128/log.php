@@ -46,10 +46,13 @@
             </h2>
 
             <!-- searchbar -->
-            <div class="search-wrapper">
-                <span class="las la-search"></span>
-                <input type="search" placeholder="Search here" />
-            </div>
+            <form action='log.php' target='_self' method='post'>
+                <div class="search-wrapper">
+                    <span class="las la-search"></span>
+                    <input type="search" id='student_number' name = 'student_number' placeholder="Student No." />
+                    <input type='submit' name='log' formmethod='post' value='Search'>
+                </div>
+            </form>
             
             <!-- site logo -->
             <div class="logo-wrapper">
@@ -87,9 +90,13 @@
                             <tbody>
                             <?php
                                 require 'functions.php';
-                                $result = getChargingLog();
 
-                                // log info rows
+                                if(isset($_POST["log"])) 
+                                    $result = getStudentLog($_POST['student_number']); // student charging log
+                                else 
+                                    $result = getChargingLog(); // all charging logs
+
+                                // output charging logs
                                 foreach($result AS $row) {
                                     if($row['state'] == '0')
                                         $log_state = "inactive";

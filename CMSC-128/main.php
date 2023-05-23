@@ -47,12 +47,6 @@
                     <label for="nav-toggle"> <span class="las la-bars"></span> </label>
                     Dashboard
                 </h2>
-
-                <!-- searchbar -->
-                <div class="search-wrapper">
-                    <span class="las la-search"></span>
-                    <input type="search" placeholder="Search here" />
-                </div>
                 
                 <!-- site logo -->
                 <div class="logo-wrapper">

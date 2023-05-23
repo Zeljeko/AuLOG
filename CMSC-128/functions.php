@@ -17,6 +17,29 @@
         return $conn;
     }
 
+    // output single student info
+    function getStudent($student_number) {
+        // Connect to the database
+        $conn = connect();
+
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT * FROM student WHERE student_number = ?");
+        $stmt->bind_param("s", $student_number);
+        $stmt->execute();
+
+        // Get the result set
+        $result = $stmt->get_result();
+
+        // Fetch and return the rows
+        $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        return $rows;
+    }
+
     // output student info
     function getStudents() {
         // Connect to the database
@@ -230,7 +253,8 @@
     }
 
     // output student charging logs
-    function getStudentLog($studentId) {
+    function getStudentLog($student_number) {
+        
         // Connect to the database
         $conn = connect();
 
@@ -238,13 +262,13 @@
         $stmt = $conn->prepare("SELECT * FROM charging_log WHERE student_number = ?");
         $stmt->bind_param("s", $student_number);
         $stmt->execute();
-
+        
         // Get the result set
         $result = $stmt->get_result();
 
         // Fetch and return the rows
         $rows = $result->fetch_all(MYSQLI_ASSOC);
-
+        
         // Close the statement and connection
         $stmt->close();
         $conn->close();

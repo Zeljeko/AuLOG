@@ -46,10 +46,14 @@
             </h2>
 
             <!-- searchbar -->
-            <div class="search-wrapper">
-                <span class="las la-search"></span>
-                <input type="search" placeholder="Search here" />
-            </div>
+            <form action='student.php' target='_self' method='post'>
+                <div class="search-wrapper">
+                    <span class="las la-search"></span>
+                    <input type="search" id='student_number' name = 'student_number' placeholder="Student No." />
+                    <input type='submit' name='student' formmethod='post' value='Search'>
+                </div>
+            </form>
+            
             
             <!-- site logo -->
             <div class="logo-wrapper">
@@ -83,31 +87,35 @@
 
                             <!-- table body -->
                             <tbody>
-                            <?php
-                                require 'functions.php';
-                                $result = getStudents();
+                                <?php
+                                    require 'functions.php';
+                                    
+                                    if(isset($_POST["student"]))
+                                        $result = getStudent($_POST['student_number']); // single student info
+                                    else  
+                                        $result = getStudents(); // student info
 
-                                // student info rows
-                                foreach($result AS $row) {
-                                    $hours = intdiv($row['charge_consumed'],60);
-                                    $minutes = $row['charge_consumed'] % 60;
-                                        
-                                    echo "<tr>";
-                                    echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
-                                    echo "<td>".$row['student_number']."</td>";
-                                    echo "<td>".$row['email']."</td>";
-                                    echo "<td>".$hours." hours ".$minutes." minutes</td>";
-                                    echo "<td> <a href='student_edit.php?
-                                    first_name=".$row['first_name'].
-                                    "&last_name=".$row['last_name'].
-                                    "&student_number=".$row['student_number'].
-                                    "&email=".$row['email'].
-                                    "&charge_consumed=".$row['charge_consumed'].
-                                    "'>Edit</a> || <a href='student_delete.php?student_number=".$row['student_number'].
-                                    "'>Delete</a></td>";
-                                    echo "</tr>";
-                                }
-                            ?>
+                                    // output student info
+                                    foreach($result AS $row) {
+                                        $hours = intdiv($row['charge_consumed'],60);
+                                        $minutes = $row['charge_consumed'] % 60;
+                                            
+                                        echo "<tr>";
+                                        echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
+                                        echo "<td>".$row['student_number']."</td>";
+                                        echo "<td>".$row['email']."</td>";
+                                        echo "<td>".$hours." hours ".$minutes." minutes</td>";
+                                        echo "<td> <a href='student_edit.php?
+                                        first_name=".$row['first_name'].
+                                        "&last_name=".$row['last_name'].
+                                        "&student_number=".$row['student_number'].
+                                        "&email=".$row['email'].
+                                        "&charge_consumed=".$row['charge_consumed'].
+                                        "'>Edit</a> || <a href='student_delete.php?student_number=".$row['student_number'].
+                                        "'>Delete</a></td>";
+                                        echo "</tr>";
+                                    }
+                                ?>
                             </tbody>
                         </table>
                     </div>
