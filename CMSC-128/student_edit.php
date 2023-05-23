@@ -39,10 +39,10 @@
         <!-- navigation bar -->
         <header>
                 
-            <!-- sidebar label and main page title -->
+            <!-- sidebar label and student info page title -->
             <h2>
                 <label for="nav-toggle"> <span class="las la-bars"></span> </label>
-                Dashboard
+                Student Info
             </h2>
 
             <!-- searchbar -->
@@ -71,8 +71,8 @@
                     <?php       
                     require 'functions.php';
 
-                    if(isset($_POST["student_edit"])) { // perform edit query
-                        // assign forwarded data to variables
+                    if(isset($_POST["student_edit"])) { // segment for processing edit transaction
+                        // assigning received data to variables
                         $condition = $_POST['condition'];
                         $first_name = $_POST['first_name'];
                         $last_name = $_POST['last_name'];
@@ -85,16 +85,55 @@
 
                         // update student info
                         editstudent($first_name, $last_name, $student_number, $email, $charge_consumed, $condition);    
-                    } else { // edit form
-                        // assign received data to variables
+                    } else { // segment for outputting form
+                        // assigning received data to variables
                         $first_name = $_GET['first_name'];
                         $last_name = $_GET['last_name'];
                         $student_number = $_GET['student_number'];
                         $email = $_GET['email'];
                         $charge_consumed = $_GET['charge_consumed'];
 
-                        // output edit form interface
-                        editStudentForm($first_name, $last_name, $student_number, $email, $charge_consumed);
+                        $hours = intdiv($charge_consumed,60);
+                        $minutes = $charge_consumed % 60;
+
+                        // form heading i
+                        echo "<form action='student_edit.php' target='_self' method='post'>";
+                        echo "<table width='100%'>";
+                        echo "<thead>";
+                        echo "<tr>";
+                        echo "<td>First Name</td>";
+                        echo "<td>Second Name</td>";
+                        echo "<td>Student No.</td>";
+                        echo "<td>Email Address</td>";
+                        echo "</tr>";
+                        echo "</thead>";
+                        
+                        // input fields i
+                        echo "<tbody> <tr>";
+                        echo "<td> <input type='text' id='first_name' name='first_name' value='".$first_name."'/> </td>";
+                        echo "<td> <input type='text' id='last_name' name='last_name' value='".$last_name."'/> </td>";
+                        echo "<td> <input type='text' id='student_number' name='student_number' value='".$student_number."'/> </td>";
+                        echo "<td> <input type='text' id='email' name='email' value='".$email."'/> </td>";
+                        echo "</tr>";
+
+                        // form heading ii
+                        echo "<tr>";
+                        echo "<td>Hours</td>";
+                        echo "<td>Minutes</td>";
+                        echo "</tr>";
+
+                        // input fields ii
+                        echo "<tr>";
+                        echo "<td> <input type='number' id='hours' name='hours' value='".$hours."'/> </td>";
+                        echo "<td> <input type='number' id='minutes' name='minutes' value='".$minutes."'/> </td>";
+                        echo "</tr> </tbody>";
+                        echo "</table>";
+
+                        echo "<input type='hidden' id='condition' name='condition' value='".$student_number."'/>";
+
+                        // forward data to self
+                        echo "<br/><input type='submit' name='student_edit' formmethod='post' value='Apply'>";
+                        echo "</form>";
                     }
                     ?>
                 </div>

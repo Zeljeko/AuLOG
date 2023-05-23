@@ -39,10 +39,10 @@
         <!-- navigation bar -->
         <header>
                 
-            <!-- sidebar label and main page title -->
+            <!-- sidebar label and charging log page title -->
             <h2>
                 <label for="nav-toggle"> <span class="las la-bars"></span> </label>
-                Dashboard
+                Charging Log
             </h2>
 
             <!-- searchbar -->

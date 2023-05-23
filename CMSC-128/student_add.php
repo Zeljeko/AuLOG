@@ -39,10 +39,10 @@
         <!-- navigation bar -->
         <header>
                 
-            <!-- sidebar label and main page title -->
+            <!-- sidebar label and student info page title -->
             <h2>
                 <label for="nav-toggle"> <span class="las la-bars"></span> </label>
-                Dashboard
+                Student Info
             </h2>
 
             <!-- searchbar -->
@@ -71,16 +71,16 @@
                     <?php           
                         include 'functions.php';
 
-                        if(isset($_POST["student_add"])) {
-                            // assigning forwarded data to variables
+                        if(isset($_POST["student_add"])) { // segment for processing add transaction
+                            // assigning received data to variables
                             $first_name = $_POST["first_name"];
                             $last_name = $_POST["last_name"];
                             $student_number = $_POST["student_number"];
                             $email = $_POST["email"];
                             
-                            // inserting student info
+                            // invoking add function
                             addstudent($first_name, $last_name, $student_number, $email);
-                        } else {
+                        } else { // segment for outputting form
                             // form heading
                             echo "<form action='student_add.php' target='_self' method='post'>";
                             echo "<table width='100%'>";
@@ -102,6 +102,7 @@
                             echo "</tr> </tbody>";
                             echo "</table>";
 
+                            // forward data to self
                             echo "<br/><input type='submit' name='student_add' formmethod='post' value='Apply'>";
                             echo "</form>";
                         }

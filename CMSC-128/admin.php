@@ -41,10 +41,10 @@
             <!-- navigation bar -->
             <header>
                 
-                <!-- sidebar label and main page title -->
+                <!-- sidebar label and admin page title -->
                 <h2>
                     <label for="nav-toggle"> <span class="las la-bars"></span> </label>
-                    Dashboard
+                    Admin
                 </h2>
 
                 <!-- searchbar -->
@@ -67,6 +67,7 @@
                     <h2> <a href='student.php'> Student Information </a> </h2>
                 </div>
 
+                <!-- charging logs -->
                 <div class="cards card-single">
                     <h2> <a href='log.php'> Charging Logs </a> </h2>
                 </div>

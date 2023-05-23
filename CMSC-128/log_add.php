@@ -39,10 +39,10 @@
         <!-- navigation bar -->
         <header>
                 
-            <!-- sidebar label and main page title -->
+            <!-- sidebar label and charging log page title -->
             <h2>
                 <label for="nav-toggle"> <span class="las la-bars"></span> </label>
-                Dashboard
+                Charging Log
             </h2>
 
             <!-- searchbar -->
@@ -69,9 +69,10 @@
                 <!-- add functionality -->
                 <div class="card-body">
                     <?php
-                        require 'functions.php';           
-                        if(isset($_POST["log_add"])) {
-                            // assigning forwarded data to variables
+                        require 'functions.php';
+                                   
+                        if(isset($_POST["log_add"])) { // segment for processing add transaction
+                            // assigning received data to variables
                             $log_id = $_POST['log_id'];
                             $tag_number = $_POST['tag_number'];
                             $student_number = $_POST['student_number'];
@@ -79,8 +80,9 @@
                             $time_out = $_POST['time_out'];
                             $state = $_POST['state'];
 
+                            // invoking add function
                             addChargingLog($log_id, $tag_number, $student_number, $time_in, $time_out, $state);
-                        } else {
+                        } else { // segment for outputting form
                             // form heading i
                             echo "<form action='log_add.php' target='_self' method='post'>";
                             echo "<table width='100%'>";

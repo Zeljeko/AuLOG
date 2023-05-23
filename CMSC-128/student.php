@@ -39,10 +39,10 @@
         <!-- navigation bar -->
         <header>
                 
-            <!-- sidebar label and main page title -->
+            <!-- sidebar label and student info page title -->
             <h2>
                 <label for="nav-toggle"> <span class="las la-bars"></span> </label>
-                Dashboard
+                Student Info
             </h2>
 
             <!-- searchbar -->
@@ -84,25 +84,11 @@
                             <!-- table body -->
                             <tbody>
                             <?php
-                                $servername = "localhost";
-                                $username = "root";
-                                $password = "";
-                                $database = "aulog_database";
-                                
-                                // Create connection
-                                $conn = new mysqli($servername, $username, $password, $database);
-
-                                // Check connection
-                                if ($conn->connect_error) {
-                                    die("Connection failed: " . $conn->connect_error);
-                                }
-
-                                // query for student info
-                                $sql = "SELECT * FROM student";
-                                $result = mysqli_query($conn, $sql);
+                                require 'functions.php';
+                                $result = getStudents();
 
                                 // student info rows
-                                while($row = mysqli_fetch_assoc($result)) {
+                                foreach($result AS $row) {
                                     $hours = intdiv($row['charge_consumed'],60);
                                     $minutes = $row['charge_consumed'] % 60;
                                         
@@ -121,9 +107,6 @@
                                     "'>Delete</a></td>";
                                     echo "</tr>";
                                 }
-
-                                // close connection
-                                mysqli_close($conn);
                             ?>
                             </tbody>
                         </table>

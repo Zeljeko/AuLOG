@@ -1,9 +1,8 @@
 <?php
-	
 	require 'functions.php';	
 
-	// delete log info
-	if($_GET['log_id'] != NULL) { // log id   
+	// delete charging log
+	if($_GET['log_id'] != NULL) {   
 		$log_id = $_GET['log_id'];
 		deleteChargingLog($log_id);
 	}
