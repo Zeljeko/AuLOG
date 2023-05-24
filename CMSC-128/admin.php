@@ -65,6 +65,11 @@
                 <div class="cards card-single">
                     <h2> <a href='log.php'> Charging Logs </a> </h2>
                 </div>
+
+                <!-- max charging time -->
+                <div class="cards card-single">
+                    <h2> <a href='charging_time.php'> Maximum Charging Time </a> </h2>
+                </div>
             </main>
         </div>
     </body>

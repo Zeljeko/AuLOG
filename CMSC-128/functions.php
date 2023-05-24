@@ -401,6 +401,56 @@
         return $rows['value'] - $rows['charge_consumed'];
     }
 
+    // get maximum charge time
+    function getMaximumChargingTime() {
+        // Connect to the database
+        $conn = connect();
+
+        // constant id
+        $constant_id = 'charging_time';
+
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT value FROM constants WHERE constant_id = ?");
+        $stmt->bind_param("i", $constant_id);
+        $stmt->execute();
+
+        // Bind the result to a variable
+        $stmt->bind_result($charging_time);
+
+        // Fetch the result
+        $stmt->fetch();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        // Return the student's email
+        return $charging_time;
+    }
+
+    // edit maximum charging time
+    function editMaximumChargingTime($charging_time) {
+        // Connect to the database
+        $conn = connect();
+
+        // constant id
+        $constant_id = 'charging_time';
+
+        // Prepare, bind, and execute the UPDATE statement
+        $stmt = $conn->prepare("UPDATE constants
+        SET value = ?
+        WHERE constant_id = ?");
+        $stmt->bind_param("ii", $charging_time, $constant_id);
+        $stmt->execute();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        echo "<script type='text/javascript'>alert('Edit successful. Redirecting you back to the admin page.');
+                window.location.href='charging_time.php';</script>";
+    }
+
     // get student email
     function getStudentEmail($student_number) {
         // Connect to the database
