@@ -188,7 +188,7 @@
         $stmt->close();
         $conn->close();
 
-        echo "<script type='text/javascript'>alert('$student_number');
+        echo "<script type='text/javascript'>alert('Session added');
             window.location.href='main.php';</script>";
     }
 
