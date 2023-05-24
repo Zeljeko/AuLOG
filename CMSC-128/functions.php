@@ -151,45 +151,70 @@
         // Connect to the database
         $conn = connect();
 
-        $constant_id = 'next_available_id';
-
-        // Prepare and execute the SELECT statement (next available id)
-        $stmt = $conn->prepare("SELECT value FROM constants
-            WHERE constant_id = ?");
-        $stmt->bind_param("s",$constant_id);
-        $stmt->execute();
-
-        // Get the result set, fetch the rows
-        $result = $stmt->get_result();
-        $rows = $result->fetch_assoc();
-        $next_available_id = $rows['value'];
-
         // get student number
         $student_number = getStudentNumber($rfid_tag);
 
         // representation of active state
         $active_state = 1;
 
-        // Prepare, bind, and execute the INSERT statement (start charging session)
-        $stmt = $conn->prepare("INSERT INTO charging_log (log_id, student_number, tag_number, time_in, state)
-            VALUES (?, ?, ?, CURRENT_TIMESTAMP(), ?)");
-        $stmt->bind_param("isii", $next_available_id, $student_number, $tag_number, $active_state);
+        // Prepare, bind, and execute the SELECT statement (get log_id and charging_log)
+        $stmt = $conn->prepare("SELECT log_id, time_in FROM charging_log WHERE student_number = ? AND state = ?");
+        $stmt->bind_param("si",$student_number, $active_state);
         $stmt->execute();
+    
+        // Get the result set
+        $result = $stmt->get_result();
+    
+        // Fetch and return the rows
+        $rows = $result->fetch_assoc();
 
-        // increment next_available_id
-        $next_available_id = $next_available_id + 1;
+        if($rows) {
+            endChargingSession($rows['time_in'], $rows['log_id']);
 
-        // Prepare, bind, and execute the UPDATE statement (update next_available_id)
-        $stmt = $conn->prepare("UPDATE constants SET value = ? WHERE constant_id = ?");
-        $stmt->bind_param("is", $next_available_id, $constant_id);
-        $stmt->execute();
+            // Close the statement and connection
+            $stmt->close();
+            $conn->close();
+        } else {
+            $constant_id = 'next_available_id';
 
-        // Close the statement and connection
-        $stmt->close();
-        $conn->close();
+            // Prepare and execute the SELECT statement (next available id)
+            $stmt = $conn->prepare("SELECT value FROM constants
+                WHERE constant_id = ?");
+            $stmt->bind_param("s",$constant_id);
+            $stmt->execute();
 
-        echo "<script type='text/javascript'>alert('Session added');
-            window.location.href='main.php';</script>";
+            // Get the result set, fetch the rows
+            $result = $stmt->get_result();
+            $rows = $result->fetch_assoc();
+            $next_available_id = $rows['value'];
+
+            // get student number
+            $student_number = getStudentNumber($rfid_tag);
+
+            // representation of active state
+            $active_state = 1;
+
+            // Prepare, bind, and execute the INSERT statement (start charging session)
+            $stmt = $conn->prepare("INSERT INTO charging_log (log_id, student_number, tag_number, time_in, state)
+                VALUES (?, ?, ?, CURRENT_TIMESTAMP(), ?)");
+            $stmt->bind_param("isii", $next_available_id, $student_number, $tag_number, $active_state);
+            $stmt->execute();
+
+            // increment next_available_id
+            $next_available_id = $next_available_id + 1;
+
+            // Prepare, bind, and execute the UPDATE statement (update next_available_id)
+            $stmt = $conn->prepare("UPDATE constants SET value = ? WHERE constant_id = ?");
+            $stmt->bind_param("is", $next_available_id, $constant_id);
+            $stmt->execute();
+
+            // Close the statement and connection
+            $stmt->close();
+            $conn->close();
+
+            echo "<script type='text/javascript'>alert('Session added');
+                window.location.href='main.php';</script>";
+        }
     }
 
     // terminate charging session
@@ -239,7 +264,7 @@
         $stmt->close();
         $conn->close();
 
-        echo "<script type='text/javascript'>alert('".$response."');
+        echo "<script type='text/javascript'>alert('Terminated session.');
             window.location.href='main.php';</script>";
     }
 
