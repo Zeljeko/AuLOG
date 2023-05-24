@@ -67,14 +67,12 @@
                 </script>
 
                 <!-- active user count -->
-                <div class="cards" id = "active-number">
-                    <div class="card-single">
-                        <?php
-                            require 'functions.php';
-                            $result = getActiveStudents();
-                            echo "<h1>".count($result)." currently active user/s </h1>";
-                        ?>
-                    </div>
+                <div class="cards card-single" id = "active-number">
+                    <?php
+                        require 'functions.php';
+                        $result = getActiveStudents();
+                        echo "<h2>".count($result)." currently active user/s </h2>";
+                    ?>
                 </div>
 
                 <!-- table of active users -->
@@ -84,7 +82,17 @@
                         <h2><span class="las la-users"></span> Users</h2>
                     <form action='start_charging_session.php' target='_self' method='post'>
                             <input type = 'text' id = 'rfid_tag' name = 'rfid_tag' value = 'RFID Tag'/>
-                            <input type = 'text' id = 'tag_number' name = 'tag_number' value = 'Tag No.' size = '4'/> 
+                            <select id = 'tag_number' name = 'tag_number'>
+                            <?php
+                                $number_of_tags = getNumberOfTags();
+
+                                $tag_number = 1;
+                                while($tag_number <= $number_of_tags) {
+                                    echo "<option value = '".$tag_number."'>".$tag_number."</option>";
+                                    $tag_number = $tag_number + 1;
+                                }
+                            ?>
+                            </select>
                             <input type='submit' name='start_charging_session' formmethod='post' value='Start'>
                         </form>
                     </div>
@@ -104,6 +112,8 @@
                             <!-- table heading -->
                             <thead>
                                 <tr>
+                                    <td>Tag No. </td>
+                                    <td>RFID Tag</td>
                                     <td>Name</td>
                                     <td>Remaining Charge</td>
                                     <td>Time Elapsed</td>
@@ -123,6 +133,8 @@
                                     $dif_minutes = $row['difference'] % 60;
                                     
                                     echo "<tr>";
+                                    echo "<td>".$row['tag_number']."</td>";
+                                    echo "<td>".$row['rfid_tag']."</td>";
                                     echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
                                     echo "<td>".$hours." hours ".$minutes." minutes</td>";
                                     echo "<td>".$diff_hours." hours ".$dif_minutes." minutes</td>";

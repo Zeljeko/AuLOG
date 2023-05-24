@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2023 at 01:04 PM
+-- Generation Time: May 24, 2023 at 11:33 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.0.13
 
@@ -55,7 +55,7 @@ CREATE TABLE `charging_log` (
 --
 
 CREATE TABLE `constants` (
-  `constant_id` text DEFAULT NULL,
+  `constant_id` varchar(20) NOT NULL,
   `value` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -65,7 +65,8 @@ CREATE TABLE `constants` (
 
 INSERT INTO `constants` (`constant_id`, `value`) VALUES
 ('charging_time', 1200),
-('next_available_id', 17);
+('next_available_id', 0),
+('number_of_tags', 16);
 
 -- --------------------------------------------------------
 
@@ -75,11 +76,19 @@ INSERT INTO `constants` (`constant_id`, `value`) VALUES
 
 CREATE TABLE `student` (
   `student_number` varchar(12) NOT NULL,
+  `rfid_tag` varchar(30) DEFAULT NULL,
   `first_name` text NOT NULL,
   `last_name` text NOT NULL,
   `email` text NOT NULL,
   `charge_consumed` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `student`
+--
+
+INSERT INTO `student` (`student_number`, `rfid_tag`, `first_name`, `last_name`, `email`, `charge_consumed`) VALUES
+('2020-08792', '123123', 'Benjamin', 'Banaga', 'babanaga@up.edu.ph', 0);
 
 --
 -- Indexes for dumped tables
@@ -97,6 +106,12 @@ ALTER TABLE `admin`
 ALTER TABLE `charging_log`
   ADD PRIMARY KEY (`log_id`),
   ADD KEY `student_number` (`student_number`);
+
+--
+-- Indexes for table `constants`
+--
+ALTER TABLE `constants`
+  ADD PRIMARY KEY (`constant_id`);
 
 --
 -- Indexes for table `student`

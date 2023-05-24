@@ -68,6 +68,9 @@
                     <!-- table title -->
                     <div class="card-header">
                         <h2><span class="las la-users"></span> Charging History </h2>
+                        <?php
+                            echo "<a href = 'reset_history.php'> Reset </a>";
+                        ?>
                     </div>
 
                     <!-- table content -->

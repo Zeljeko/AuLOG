@@ -70,6 +70,11 @@
                 <div class="cards card-single">
                     <h2> <a href='charging_time.php'> Maximum Charging Time </a> </h2>
                 </div>
+
+                <!-- number of tags -->
+                <div class="cards card-single">
+                    <h2> <a href='number_of_tags.php'> Number of Tags </a> </h2>
+                </div>
             </main>
         </div>
     </body>

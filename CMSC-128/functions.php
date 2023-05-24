@@ -69,7 +69,7 @@
         $conn = connect();
 
         // Prepare and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT student.student_number, rfid_tag, first_name, last_name, log_id, time_in,
+        $stmt = $conn->prepare("SELECT student.student_number, tag_number, rfid_tag, first_name, last_name, log_id, time_in,
             TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS difference FROM student JOIN charging_log
             ON student.student_number = charging_log.student_number
             WHERE state = 1");
@@ -437,10 +437,9 @@
         $constant_id = 'charging_time';
 
         // Prepare, bind, and execute the UPDATE statement
-        $stmt = $conn->prepare("UPDATE constants
-        SET value = ?
+        $stmt = $conn->prepare("UPDATE constants SET value = ?
         WHERE constant_id = ?");
-        $stmt->bind_param("ii", $charging_time, $constant_id);
+        $stmt->bind_param("is", $charging_time, $constant_id);
         $stmt->execute();
 
         // Close the statement and connection
@@ -499,6 +498,76 @@
         return $student_number;
     }
 
+    // get numbe of tags
+    function getNumberOfTags() {
+        // Connect to the database
+        $conn = connect();
+
+        // constant id
+        $constant_id = 'number_of_tags';
+
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT value FROM constants WHERE constant_id = ?");
+        $stmt->bind_param("s", $constant_id);
+        $stmt->execute();
+
+        // Bind the result to a variable
+        $stmt->bind_result($number_of_tags);
+
+        // Fetch the result
+        $stmt->fetch();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        // Return the number of tags
+        return $number_of_tags;
+    }
+
+    // edit number of tags
+    function editNumberOfTags($number_of_tags) {
+        // Connect to the database
+        $conn = connect();
+
+        // constant id
+        $constant_id = 'number_of_tags';
+
+        // Prepare, bind, and execute the UPDATE statement
+        $stmt = $conn->prepare("UPDATE constants SET value = ?
+        WHERE constant_id = ?");
+        $stmt->bind_param("is", $number_of_tags, $constant_id);
+        $stmt->execute();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        echo "<script type='text/javascript'>alert('Edit successful. Redirecting you back to the admin page.');
+                window.location.href='number_of_tags.php';</script>";
+    }
+
+    // reset charging time and clear history
+    function resetHistory() {
+        // Connect to the database
+        $conn = connect();
+
+        // Prepare and execute the DELETE statement
+        $stmt = $conn->prepare("DELETE FROM charging_log");
+        $stmt->execute();
+
+        // Prepare, bind, and execute the UPDATE statement
+        $stmt = $conn->prepare("UPDATE student SET charge_consumed = 0");
+        $stmt->execute();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        echo "<script type='text/javascript'>alert('Reset successful. Redirecting you back to the admin page.');
+                window.location.href='log.php';</script>";
+    }
+    
     function sendEmailToStudent($email, $remaining_time) {
         $apiKey = 'mailgun_api_key';
         $domain = 'mailgun_domain';
