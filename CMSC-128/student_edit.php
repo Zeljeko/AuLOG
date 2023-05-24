@@ -68,6 +68,7 @@
                     if(isset($_POST["student_edit"])) { // segment for processing edit transaction
                         // assigning received data to variables
                         $condition = $_POST['condition'];
+                        $rfid_tag = $_POST['rfid_tag'];
                         $first_name = $_POST['first_name'];
                         $last_name = $_POST['last_name'];
                         $student_number = $_POST['student_number'];
@@ -78,9 +79,10 @@
                         $charge_consumed = ($hours * 60) + $minutes;
 
                         // update student info
-                        editstudent($first_name, $last_name, $student_number, $email, $charge_consumed, $condition);    
+                        editstudent($rfid_tag, $first_name, $last_name, $student_number, $email, $charge_consumed, $condition);    
                     } else { // segment for outputting form
                         // assigning received data to variables
+                        $rfid_tag = $_GET['rfid_tag'];
                         $first_name = $_GET['first_name'];
                         $last_name = $_GET['last_name'];
                         $student_number = $_GET['student_number'];
@@ -95,29 +97,31 @@
                         echo "<table width='100%'>";
                         echo "<thead>";
                         echo "<tr>";
+                        echo "<td>RFID Tag</td>";
                         echo "<td>First Name</td>";
-                        echo "<td>Second Name</td>";
+                        echo "<td>Last Name</td>";
                         echo "<td>Student No.</td>";
-                        echo "<td>Email Address</td>";
                         echo "</tr>";
                         echo "</thead>";
                         
                         // input fields i
                         echo "<tbody> <tr>";
+                        echo "<td> <input type='text' id='rfid_tag' name='rfid_tag' value='".$rfid_tag."'/> </td>";
                         echo "<td> <input type='text' id='first_name' name='first_name' value='".$first_name."'/> </td>";
                         echo "<td> <input type='text' id='last_name' name='last_name' value='".$last_name."'/> </td>";
                         echo "<td> <input type='text' id='student_number' name='student_number' value='".$student_number."'/> </td>";
-                        echo "<td> <input type='text' id='email' name='email' value='".$email."'/> </td>";
                         echo "</tr>";
 
                         // form heading ii
                         echo "<tr>";
+                        echo "<td>Email Address</td>";
                         echo "<td>Hours</td>";
                         echo "<td>Minutes</td>";
                         echo "</tr>";
 
                         // input fields ii
                         echo "<tr>";
+                        echo "<td> <input type='text' id='email' name='email' value='".$email."'/> </td>";
                         echo "<td> <input type='number' id='hours' name='hours' value='".$hours."'/> </td>";
                         echo "<td> <input type='number' id='minutes' name='minutes' value='".$minutes."'/> </td>";
                         echo "</tr> </tbody>";

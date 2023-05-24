@@ -83,7 +83,7 @@
                     <div class="card-header">
                         <h2><span class="las la-users"></span> Users</h2>
                     <form action='start_charging_session.php' target='_self' method='post'>
-                            <input type = 'text' id = 'student_number' name = 'student_number' value = 'Student No.'/>
+                            <input type = 'text' id = 'rfid_tag' name = 'rfid_tag' value = 'RFID Tag'/>
                             <input type = 'text' id = 'tag_number' name = 'tag_number' value = 'Tag No.' size = '4'/> 
                             <input type='submit' name='start_charging_session' formmethod='post' value='Start'>
                         </form>

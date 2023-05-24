@@ -67,33 +67,43 @@
 
                         if(isset($_POST["student_add"])) { // segment for processing add transaction
                             // assigning received data to variables
+                            $rfid_tag = $_POST['rfid_tag'];
                             $first_name = $_POST["first_name"];
                             $last_name = $_POST["last_name"];
                             $student_number = $_POST["student_number"];
                             $email = $_POST["email"];
                             
                             // invoking add function
-                            addstudent($first_name, $last_name, $student_number, $email);
+                            addstudent($rfid_tag, $first_name, $last_name, $student_number, $email);
                         } else { // segment for outputting form
                             // form heading
                             echo "<form action='student_add.php' target='_self' method='post'>";
                             echo "<table width='100%'>";
-                            echo "<thead>";
-                            echo "<tr>";
+                            echo "<tr> <thead>";
+                            echo "<td>RFID Tag</td>";
                             echo "<td>First Name</td>";
-                            echo "<td>Second Name</td>";
+                            echo "<td>Last Name</td>";
+                            echo "</tr> </thead>";
+
+                            
+                            // input fields
+                            echo "<tr>";
+                            echo "<td> <input type='text' id='rfid_tag' name='rfid_tag' value='RFID Tag'/> </td>";
+                            echo "<td> <input type='text' id='first_name' name='first_name' value='First Name'/> </td>";
+                            echo "<td> <input type='text' id='last_name' name='last_name' value='Last Name'/> </td>";
+                            echo "</tr>";
+
+                            // form heading ii
+                            echo "<tr>";
                             echo "<td>Student No.</td>";
                             echo "<td>Email Address</td>";
                             echo "</tr>";
-                            echo "</thead>";
-                            
-                            // input fields
-                            echo "<tbody> <tr>";
-                            echo "<td> <input type='text' id='first_name' name='first_name' value='First Name'/> </td>";
-                            echo "<td> <input type='text' id='last_name' name='last_name' value='Last Name'/> </td>";
+
+                            // input fields ii
+                            echo "<tr>";
                             echo "<td> <input type='text' id='student_number' name='student_number' value='XXXX-YYYYY'/> </td>";
                             echo "<td> <input type='text' id='email' name='email' value='sample@email.com'/> </td>";
-                            echo "</tr> </tbody>";
+                            echo "</tr>";
                             echo "</table>";
 
                             // forward data to self

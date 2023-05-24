@@ -77,6 +77,7 @@
                             <!-- table heading -->
                             <thead>
                                 <tr>
+                                    <td>RFID Tag</td>
                                     <td>Name</td>
                                     <td>Student No.</td>
                                     <td>Email Address</td>
@@ -101,12 +102,14 @@
                                         $minutes = $row['charge_consumed'] % 60;
                                             
                                         echo "<tr>";
+                                        echo "<td>".$row['rfid_tag']."</td>";
                                         echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
                                         echo "<td>".$row['student_number']."</td>";
                                         echo "<td>".$row['email']."</td>";
                                         echo "<td>".$hours." hours ".$minutes." minutes</td>";
                                         echo "<td> <a href='student_edit.php?
-                                        first_name=".$row['first_name'].
+                                        rfid_tag=".$row['rfid_tag'].
+                                        "&first_name=".$row['first_name'].
                                         "&last_name=".$row['last_name'].
                                         "&student_number=".$row['student_number'].
                                         "&email=".$row['email'].

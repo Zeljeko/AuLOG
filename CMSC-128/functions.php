@@ -1,4 +1,5 @@
 <?php
+
     // database connection function
     function connect() {
         $servername = "localhost";
@@ -68,7 +69,7 @@
         $conn = connect();
 
         // Prepare and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT student.student_number, first_name, last_name, log_id, time_in,
+        $stmt = $conn->prepare("SELECT student.student_number, rfid_tag, first_name, last_name, log_id, time_in,
             TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS difference FROM student JOIN charging_log
             ON student.student_number = charging_log.student_number
             WHERE state = 1");
@@ -88,15 +89,15 @@
     }
 
     // add student info
-    function addStudent($firstName, $lastName, $student_number, $email) {
+    function addStudent($rfid_tag, $first_name, $last_name, $student_number, $email) {
         // Connect to the database
         $conn = connect();
 
         // Prepare, bind, and execute the INSERT statement
         $charge_consumed = 0;
-        $stmt = $conn->prepare("INSERT INTO student (first_name, last_name, student_number, email, charge_consumed)
-            VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssi", $firstName, $lastName, $student_number, $email, $charge_consumed);
+        $stmt = $conn->prepare("INSERT INTO student (rfid_tag, first_name, last_name, student_number, email, charge_consumed)
+            VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssi", $rfid_tag, $first_name, $last_name, $student_number, $email, $charge_consumed);
         $stmt->execute();
 
         // Close the statement and connection
@@ -126,15 +127,15 @@
     }
 
     // edit student info
-    function editStudent($first_name, $last_name, $student_number, $email, $charge_consumed, $condition) {
+    function editStudent($rfid_tag, $first_name, $last_name, $student_number, $email, $charge_consumed, $condition) {
         // Connect to the database
         $conn = connect();
 
         // Prepare, bind, and execute the UPDATE statement
         $stmt = $conn->prepare("UPDATE student
-            SET first_name = ?, last_name = ?, student_number = ?, email = ?, charge_consumed = ?
+            SET rfid_tag = ?, first_name = ?, last_name = ?, student_number = ?, email = ?, charge_consumed = ?
             WHERE student_number = ?");
-        $stmt->bind_param("ssssis",$first_name, $last_name, $student_number, $email, $charge_consumed, $condition);
+        $stmt->bind_param("sssssis", $rfid_tag, $first_name, $last_name, $student_number, $email, $charge_consumed, $condition);
         $stmt->execute();
 
         // Close the statement and connection
@@ -146,7 +147,7 @@
     }
 
     // create charging session
-    function startChargingSession($student_number, $tag_number) {
+    function startChargingSession($rfid_tag, $tag_number) {
         // Connect to the database
         $conn = connect();
 
@@ -162,6 +163,9 @@
         $result = $stmt->get_result();
         $rows = $result->fetch_assoc();
         $next_available_id = $rows['value'];
+
+        // get student number
+        $student_number = getStudentNumber($rfid_tag);
 
         // representation of active state
         $active_state = 1;
@@ -184,7 +188,7 @@
         $stmt->close();
         $conn->close();
 
-        echo "<script type='text/javascript'>alert('Session Added.');
+        echo "<script type='text/javascript'>alert('$student_number');
             window.location.href='main.php';</script>";
     }
 
@@ -217,16 +221,25 @@
         // Fetch and return the rows
         $rows = $result->fetch_assoc();
 
+        // Assign fetched data to variables
+        $consumed = $rows['consumed'];
+        $student_number = $rows['student_number'];
+
         // Prepare, bind, and execute the UPDATE statement (update remaining charge time)
         $stmt = $conn->prepare("UPDATE student SET charge_consumed = ? WHERE student_number = ?");
-        $stmt->bind_param("is", $rows['consumed'], $rows['student_number']);
+        $stmt->bind_param("is", $consumed, $student_number);
         $stmt->execute();
         
+        $email = getStudentEmail($student_number);
+        $remaining_time = getRemainingCharge($student_number);
+
+        $response = sendEmailToStudent($email, $remaining_time);
+
         // Close the statement and connection
         $stmt->close();
         $conn->close();
 
-        echo "<script type='text/javascript'>alert('Session terminated');
+        echo "<script type='text/javascript'>alert('".$response."');
             window.location.href='main.php';</script>";
     }
 
@@ -387,17 +400,39 @@
         return $email;
     }
 
-    function sendEmailToStudent($email, $charge_consumed) {
+    // get student number
+    function getStudentNumber($rfid_tag) {
+        // Connect to the database
+        $conn = connect();
+
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT student_number FROM student WHERE rfid_tag = ?");
+        $stmt->bind_param("s", $rfid_tag);
+        $stmt->execute();
+
+        // Bind the result to a variable
+        $stmt->bind_result($student_number);
+
+        // Fetch the result
+        $stmt->fetch();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        // Return the student's email
+        return $student_number;
+    }
+
+    function sendEmailToStudent($email, $remaining_time) {
         $apiKey = 'mailgun_api_key';
         $domain = 'mailgun_domain';
-        $fromEmail = 'sender_email@example.com';
-        $fromName = 'Library yowzzzz';
-
-        // calculate remaining time
-        $remaining_time = getRemainingCharge($charge_consumed);
+        $fromEmail = 'sample@gmail.com';
+        $fromName = 'Benjamin';
 
         $subject = 'Remaining Charging Time';
-        $message = "Dear student,\n\nYou have $remaining_time minutes remaining for your charging session.\n\nBest regards,\nYour Library";
+        $message = "Dear student,\n\nYou have $remaining_time minutes remaining for
+            your charging session.\n\nBest regards,\nYour Library";
 
         // Prepare the email parameters
         $params = array(
