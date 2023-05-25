@@ -47,7 +47,7 @@
         $conn = connect();
 
         // Prepare and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT * FROM student");
+        $stmt = $conn->prepare("SELECT * FROM student ORDER BY first_name, last_name ASC");
         $stmt->execute();
 
         // Get the result set
@@ -72,7 +72,7 @@
         $stmt = $conn->prepare("SELECT student.student_number, tag_number, rfid_tag, first_name, last_name, college, log_id, time_in,
             TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS difference FROM student JOIN charging_log
             ON student.student_number = charging_log.student_number
-            WHERE state = 1");
+            WHERE state = 1 ORDER BY time_in ASC");
         $stmt->execute();
     
         // Get the result set
@@ -274,7 +274,7 @@
         $conn = connect();
 
         // Prepare and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT * FROM charging_log");
+        $stmt = $conn->prepare("SELECT * FROM charging_log ORDER BY time_in, time_out ASC");
         $stmt->execute();
 
         // Get the result set
@@ -297,7 +297,7 @@
         $conn = connect();
 
         // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT * FROM charging_log WHERE student_number = ?");
+        $stmt = $conn->prepare("SELECT * FROM charging_log WHERE student_number = ? ORDER BY time_in, time_out ASC");
         $stmt->bind_param("s", $student_number);
         $stmt->execute();
         

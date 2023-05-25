@@ -57,7 +57,7 @@
             <div class="recent-grid Users card">
                 <!-- Form Title -->
                 <div class="card-header">
-                    <h2><span class="las la-users"></span> Students</h2>
+                    <h2><span class="las la-users"></span> Edit Student Info </h2>
                 </div>
 
                 <!-- edit functionallity -->
