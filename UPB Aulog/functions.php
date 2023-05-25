@@ -234,6 +234,7 @@
 
         // Prepare, bind, and execute the SELECT STATEMENT (calculate remaining charging time)
         $stmt = $conn->prepare("SELECT student.student_number,
+            (TIMESTAMPDIFF(MINUTE, time_in, time_out)) AS difference,
             (TIMESTAMPDIFF(MINUTE, time_in, time_out) + charge_consumed) AS consumed
             FROM student JOIN charging_log ON student.student_number = charging_log.student_number
             WHERE log_id = ?");
@@ -247,6 +248,7 @@
         $rows = $result->fetch_assoc();
 
         // Assign fetched data to variables
+        $difference = $rows['difference'];
         $consumed = $rows['consumed'];
         $student_number = $rows['student_number'];
 
@@ -264,7 +266,7 @@
         $stmt->close();
         $conn->close();
 
-        echo "<script type='text/javascript'>alert('Terminated session.');
+        echo "<script type='text/javascript'>alert('Terminated session. Consumed: $difference minutes');
             window.location.href='main.php';</script>";
     }
 
