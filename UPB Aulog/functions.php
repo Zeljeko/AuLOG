@@ -68,9 +68,9 @@
         // Connect to the database
         $conn = connect();
 
-        // Prepare and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT student.student_number, tag_number, rfid_tag, first_name, last_name, college, log_id, time_in,
-            TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS difference FROM student JOIN charging_log
+        // Prepare and execute the SELECT statement;
+        $stmt = $conn->prepare("SELECT student.student_number, tag_number, rfid_tag, first_name, last_name, college, log_id, time_in
+            FROM student JOIN charging_log
             ON student.student_number = charging_log.student_number
             WHERE state = 1 ORDER BY time_in ASC");
         $stmt->execute();
@@ -146,13 +146,31 @@
                 window.location.href='student.php';</script>";
     }
 
+    function editTagNumber($log_id, $tag_number) {
+        // Connect to the database
+        $conn = connect();
+
+        // Prepare, bind, and execute the UPDATE statement
+        $stmt = $conn->prepare("UPDATE charging_log SET tag_number = ? WHERE log_id = ?");
+        $stmt->bind_param("ii", $tag_number, $log_id);
+        $stmt->execute();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        echo "<script type='text/javascript'>alert('Edit successful. Redirecting you back to the dashboard.');
+                window.location.href='main.php';</script>";
+    }
+
     // create charging session
-    function startChargingSession($rfid_tag, $tag_number) {
+    function startChargingSession($student_number, $rfid_tag, $tag_number) {
         // Connect to the database
         $conn = connect();
 
         // get student number
-        $student_number = getStudentNumber($rfid_tag);
+        if($student_number == '')
+            $student_number = getStudentNumber($rfid_tag);
 
         // representation of active state
         $active_state = 1;
@@ -187,9 +205,6 @@
             $result = $stmt->get_result();
             $rows = $result->fetch_assoc();
             $next_available_id = $rows['value'];
-
-            // get student number
-            $student_number = getStudentNumber($rfid_tag);
 
             // representation of active state
             $active_state = 1;
@@ -364,6 +379,30 @@
         $conn->close();
 
         return $rows['value'] - $rows['charge_consumed'];
+    }
+
+    // get time elapsed
+    function getTimeElapsed($log_id) {
+        // Connect to the database
+        $conn = connect();
+
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS time_elapsed
+            FROM charging_log WHERE log_id = ?");
+        $stmt->bind_param("i",$log_id);
+        $stmt->execute();
+
+        // Get the result set
+        $result = $stmt->get_result();
+
+        // Fetch and return the rows
+        $rows = $result->fetch_assoc();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        return $rows['time_elapsed'];
     }
 
     // get maximum charge time

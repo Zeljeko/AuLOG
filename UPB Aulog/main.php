@@ -73,7 +73,8 @@
                     <div class="card-header">
                         <h2><span class="las la-users"></span> Users</h2>
                     <form action='start_charging_session.php' target='_self' method='post'>
-                            <input type = 'text' id = 'rfid_tag' name = 'rfid_tag' value = 'RFID Tag'/>
+                            <input type = 'text' id = 'student_number' name = 'student_number' placeholder = 'Student No.' value = ''/>
+                            <input type = 'text' id = 'rfid_tag' name = 'rfid_tag' placeholder = 'RFID Tag' value = ''/>
                             <select id = 'tag_number' name = 'tag_number'>
                             <?php
                                 $number_of_tags = getNumberOfTags();
@@ -96,7 +97,7 @@
                             $("#active-students").load(window.location.href + " #active-students" );
                         }, 3000);
                         });
-                    </script>
+                    </script> 
 
                     <!-- table content -->
                     <div class="card-body" id = "active-students">
@@ -104,6 +105,7 @@
                             <!-- table heading -->
                             <thead>
                                 <tr>
+                                    <td> </td>
                                     <td>Tag No. </td>
                                     <td>RFID Tag</td>
                                     <td>Name</td>
@@ -113,25 +115,29 @@
                                 </tr>
                             </thead>
   
-                            <tbody>   
+                            <tbody> 
                             <?php
                                 $result = getActiveStudents();
 
                                 // displaying student entries
-                                foreach($result AS $row) {
+                                foreach($result AS $row) {     
                                     $hours = intdiv(getRemainingCharge($row['student_number']), 60);
                                     $minutes = getRemainingCharge($row['student_number']) % 60;
-
-                                    $diff_hours = intdiv($row['difference'], 60);
-                                    $dif_minutes = $row['difference'] % 60;
                                     
+                                    $hours_elapsed = intdiv(getTimeElapsed($row['log_id']), 60);
+                                    $minutes_elapsed = getTimeElapsed($row['log_id']) % 60;
+
                                     echo "<tr>";
+                                    echo "<td> <a href='tag_edit.php?log_id=".$row['log_id'].
+                                        "&student_number=".$row['student_number'].
+                                        "&tag_number=".$row['tag_number'].
+                                        "'> Edit </a> </td>";
                                     echo "<td>".$row['tag_number']."</td>";
                                     echo "<td>".$row['rfid_tag']."</td>";
                                     echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
                                     echo "<td>".$row['college']."</td>";
                                     echo "<td>".$hours." hours ".$minutes." minutes</td>";
-                                    echo "<td>".$diff_hours." hours ".$dif_minutes." minutes</td>";
+                                    echo "<td>".$hours_elapsed." hours ".$minutes_elapsed." minutes</td>";
                                     echo "<td> <a href='end_charging_session.php?
                                     log_id=".$row['log_id'].
                                     "&time_in=".$row['time_in']."'>End</a></td>";
