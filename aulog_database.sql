@@ -134,7 +134,7 @@ AFTER INSERT ON charging_log
 FOR EACH ROW
 BEGIN
     UPDATE student
-    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in))
+    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in)) / 60
     WHERE student_number = NEW.student_number;
 END //
 
@@ -143,10 +143,11 @@ AFTER UPDATE ON charging_log
 FOR EACH ROW
 BEGIN
     UPDATE student
-    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in))
+    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in)) / 60
     WHERE student_number = NEW.student_number;
 END //
 DELIMITER ;
+
 
 
 COMMIT;
