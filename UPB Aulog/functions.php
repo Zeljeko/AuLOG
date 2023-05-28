@@ -509,7 +509,7 @@
         $conn = connect();
 
         // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS time_elapsed
+        $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(SECOND, time_in, CURRENT_TIMESTAMP()) AS time_elapsed
             FROM charging_log WHERE log_id = ?");
         $stmt->bind_param("i",$log_id);
         $stmt->execute();
@@ -524,7 +524,7 @@
         $stmt->close();
         $conn->close();
 
-        return $rows['time_elapsed'];
+        return intdiv($rows['time_elapsed'], 60);
     }
 
     // get maximum charge time
