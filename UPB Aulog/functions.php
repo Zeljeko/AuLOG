@@ -381,7 +381,7 @@
                     $htmlTable .= '<td>' . $record['tag_number'] . '</td>';
                     $htmlTable .= '<td>' . $record['time_in'] . '</td>';
                     $htmlTable .= '<td>' . $record['time_out'] . '</td>';
-                    $htmlTable .= '<td>' . $hours_consumed . 'hour/s and ' . $minutes_consumed . 'minute/s </td>';
+                    $htmlTable .= '<td>' . $hours_consumed . ' hour/s  and  ' . $minutes_consumed . ' minute/s </td>';
                     $htmlTable .= '</tr>';
                 }
         
