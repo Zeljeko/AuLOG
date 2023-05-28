@@ -16,23 +16,27 @@
 
     <!-- sidebar -->
     <div class="sidebar">
-        <div class="sidebar-brand">
-            <h2><span class="lab la-accusoft"></span> <span>AuLOG</span></h2>
-        </div>
+            <div class="sidebar-brand">
+                <h2><span class="lab la-accusoft"></span> <span>AuLOG</span></h2>
+            </div>
 
-        <div class="sidebar-menu">
-            <ul>
-                <li>
-                    <a href="main.php"><span class="las la-igloo"></span>
-                    <span>Dashboard</span></a>
-                </li>
-                <li>
-                    <a href="admin.php" class="active"><span class="las la-users"></span>
-                    <span>Admin</span></a>
-                </li>
-            </ul>
+            <div class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a href="main.php" ><span class="las la-igloo"></span>
+                        <span>Dashboard</span></a>
+                    </li>
+                    <li>
+                        <a href="admin.php" class="active"><span class="las la-users"></span>
+                        <span>Admin</span></a>
+                    </li>
+                    <li>
+                        <a href="report.php"><span class="las la-users"></span>
+                        <span>Report</span></a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
 
     <!-- main content -->
     <div class="main-content">
