@@ -252,3 +252,13 @@ td {
     color: #222;
 }
 
+#chart-container{
+    width:600px;
+    height: 800px;
+}
+
+#chart-chart-container{
+    display: flex;
+    height: 200px;
+}
+

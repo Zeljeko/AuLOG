@@ -6,5 +6,7 @@
 		$log_id = $_GET['log_id'];
 		$time_in = $_GET['time_in'];
 		endChargingSession($time_in, $log_id);
+		$student_number = getStudentNumberByLogID($log_id);
+		sendEmailChargingStatus($student_number);
 	}
 ?>

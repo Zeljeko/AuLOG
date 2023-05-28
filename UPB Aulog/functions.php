@@ -1,4 +1,12 @@
 <?php
+    //For email sending
+    require 'includes/PHPMailer.php';
+    require 'includes/SMTP.php';
+    require 'includes/Exception.php';
+    //Define name spaces
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\SMTP;
+    use PHPMailer\PHPMailer\Exception;
 
     // database connection function
     function connect() {
@@ -247,41 +255,7 @@
         $stmt->execute();
         $stmt->close();
 
-        // Prepare, bind, and execute the SELECT STATEMENT (calculate remaining charging time)
-        $stmt = $conn->prepare("SELECT student.student_number,
-            (TIMESTAMPDIFF(MINUTE, time_in, time_out)) AS difference,
-            (TIMESTAMPDIFF(MINUTE, time_in, time_out) + charge_consumed) AS consumed
-            FROM student JOIN charging_log ON student.student_number = charging_log.student_number
-            WHERE log_id = ?");
-        $stmt->bind_param("i", $log_id);
-        $stmt->execute();
-
-        // Get the result set
-        $result = $stmt->get_result();
-
-        // Fetch and return the rows
-        $rows = $result->fetch_assoc();
-
-        // Assign fetched data to variables
-        $difference = $rows['difference'];
-        $consumed = $rows['consumed'];
-        $student_number = $rows['student_number'];
-
-        // Prepare, bind, and execute the UPDATE statement (update remaining charge time)
-        $stmt = $conn->prepare("UPDATE student SET charge_consumed = ? WHERE student_number = ?");
-        $stmt->bind_param("is", $consumed, $student_number);
-        $stmt->execute();
-        
-        $email = getStudentEmail($student_number);
-        $remaining_time = getRemainingCharge($student_number);
-
-        $response = sendEmailToStudent($email, $remaining_time);
-
-        // Close the statement and connection
-        $stmt->close();
-        $conn->close();
-
-        echo "<script type='text/javascript'>alert('Terminated session. Consumed: $difference minutes');
+        echo "<script type='text/javascript'>alert('Terminated session.');
             window.location.href='main.php';</script>";
     }
 
@@ -572,15 +546,17 @@
                 window.location.href='log.php';</script>";
     }
     
-    function sendEmailToStudent($email, $remaining_time) {
+    function sendEmailToStudent($email, $charge_consumed) {
         $apiKey = 'mailgun_api_key';
         $domain = 'mailgun_domain';
-        $fromEmail = 'sample@gmail.com';
-        $fromName = 'Benjamin';
+        $fromEmail = 'sender_email@example.com';
+        $fromName = 'Library yowzzzz';
+
+        // calculate remaining time
+        $remaining_time = getRemainingCharge($charge_consumed);
 
         $subject = 'Remaining Charging Time';
-        $message = "Dear student,\n\nYou have $remaining_time minutes remaining for
-            your charging session.\n\nBest regards,\nYour Library";
+        $message = "Dear student,\n\nYou have $remaining_time minutes remaining for your charging session.\n\nBest regards,\nYour Library";
 
         // Prepare the email parameters
         $params = array(
@@ -602,5 +578,268 @@
         curl_close($ch);
 
         return $response;
+    }
+
+    function generateDailyReport() {
+        $conn = connect();
+    
+        // Fetch the number of hours used each day for the past 30 days
+        $sql = "SELECT DATE(time_in) AS day, SUM(TIMESTAMPDIFF(MINUTE, time_in, time_out)) AS total_minutes 
+                FROM charging_log 
+                WHERE time_in >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+                GROUP BY DATE(time_in)";
+        $result = $conn->query($sql);
+    
+        // Store the results in an array
+        $reportData = array();
+    
+        // Get the past 30 days as an array of date strings
+        $past30Days = array();
+        for ($i = 0; $i < 30; $i++) {
+            $past30Days[] = date('d', strtotime("-$i days"));
+        }
+    
+        // Initialize report data with zero hours for all past 30 days
+        foreach ($past30Days as $day) {
+            $reportData[$day] = 0;
+        }
+    
+        // Fill in the actual hours from the query results
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $date = $row['day'];
+                $day = date('d', strtotime($date));
+                $totalMinutes = $row['total_minutes'];
+                $totalHours = floor($totalMinutes / 60); // Convert minutes to hours
+    
+                // Store the day and total hours in the report data array
+                $reportData[$day] = $totalHours;
+            }
+        }
+        return $reportData;
+    }
+    
+    
+
+    function generateWeeklyReport() {
+        $conn = connect();
+    
+        // Fetch the number of hours used each week
+        $sql = "SELECT WEEK(time_in) AS week, SUM(TIMESTAMPDIFF(MINUTE, time_in, time_out)) AS total_minutes 
+                FROM charging_log 
+                GROUP BY WEEK(time_in)";
+        $result = $conn->query($sql);
+    
+        // Store the results in an array
+        $reportData = array();
+    
+        // Get the current year
+        $currentYear = date('Y');
+    
+        // Initialize report data with zero hours for all weeks of the year
+        for ($week = 1; $week <= 52; $week++) {
+            $reportData[$week] = 0;
+        }
+    
+        // Fill in the actual hours from the query results
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $week = $row['week'];
+                $totalMinutes = $row['total_minutes'];
+                $totalHours = floor($totalMinutes / 60); // Convert minutes to hours
+    
+                // Store the week and total hours in the report data array
+                $reportData[$week] = $totalHours;
+            }
+        }
+    
+        return $reportData;
+    }
+    
+    
+    function generateMonthlyReport() {
+        $conn = connect();
+    
+        // Fetch the number of hours used each month
+        $sql = "SELECT MONTH(time_in) AS month, SUM(TIMESTAMPDIFF(MINUTE, time_in, time_out)) AS total_minutes FROM charging_log GROUP BY MONTH(time_in)";
+        $result = $conn->query($sql);
+    
+        // Store the results in an array
+        $reportData = array();
+    
+        // Get the past 12 months as an array of month numbers
+        $currentMonth = date('n'); // Get the current month number
+        $past12Months = array();
+        for ($i = 0; $i < 12; $i++) {
+            $month = ($currentMonth - $i) > 0 ? ($currentMonth - $i) : (12 - abs($currentMonth - $i));
+            $past12Months[] = $month;
+        }
+    
+        // Initialize report data with zero hours for all past 12 months
+        foreach ($past12Months as $month) {
+            $reportData[$month] = 0;
+        }
+    
+        // Fill in the actual hours from the query results
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $month = $row['month'];
+                $totalMinutes = $row['total_minutes'];
+                $totalHours = floor($totalMinutes / 60); // Convert minutes to hours
+    
+                // Store the month and total hours in the report data array
+                $reportData[$month] = $totalHours;
+            }
+        }
+    
+        return $reportData;
+    }    
+
+    
+    
+
+    function getChargingRecordsForStudent($student_number) {
+        $conn = connect();
+    
+        // Fetch Records
+        $sql = "SELECT * FROM charging_log WHERE student_number = '$student_number'";
+        $result = $conn->query($sql);
+    
+        // Check if records exist
+        if ($result->num_rows > 0) {
+            $records = array();
+    
+            // Fetch records and store them in an array
+            while ($row = $result->fetch_assoc()) {
+                $records[] = $row;
+            }
+    
+            // Free the result set
+            $result->free_result();
+        } else {
+            $records = array(); // Empty array if no records found
+        }
+    
+        // Close the database connection
+        $conn->close();
+    
+        return $records;
+    }    
+
+    function generateHTMLTableFromRecords($records) {
+        // Create an empty string to hold the HTML table
+        $htmlTable = '';
+    
+        // Check if there are any records
+        if (count($records) > 0) {
+            // Start the HTML table
+            $htmlTable .= '<table>';
+            $htmlTable .= '<tr><th>Log ID</th><th>Student Number</th><th>Tag Number</th><th>Time In</th><th>Time Out</th></tr>';
+    
+            // Loop through each record and generate table rows
+            foreach ($records as $record) {
+                $htmlTable .= '<tr>';
+                $htmlTable .= '<td>' . $record['log_id'] . '</td>';
+                $htmlTable .= '<td>' . $record['student_number'] . '</td>';
+                $htmlTable .= '<td>' . $record['tag_number'] . '</td>';
+                $htmlTable .= '<td>' . $record['time_in'] . '</td>';
+                $htmlTable .= '<td>' . $record['time_out'] . '</td>';
+                $htmlTable .= '</tr>';
+            }
+    
+            // Close the HTML table
+            $htmlTable .= '</table>';
+        } else {
+            $htmlTable = 'No records found.';
+        }
+    
+        // Return the HTML table string
+        return $htmlTable;
+    }
+
+    function generateRemainingChargeHTML($student_number) {
+        // Get the remaining charge for the student
+        $hours = intdiv(getRemainingCharge($student_number), 60);
+        $minutes = getRemainingCharge($student_number) % 60;
+    
+        // Create the HTML string
+        $html = '<p>Dear student, your remaining charging hours are:</p>';
+        $html .= '<h1>' . $hours . ' hours ' . 'and '. $minutes .' minutes '. '</h1>';
+        $html .= '<p>Thank you.</p>';
+    
+        return $html;
+    }
+    
+    function sendEmailChargingStatus($student_number){
+    //Create instance of PHPMailer
+        $mail = new PHPMailer();
+    //Set mailer to use smtp
+        $mail->isSMTP();
+    //Define smtp host
+        $mail->Host = "smtp.gmail.com";
+    //Enable smtp authentication
+        $mail->SMTPAuth = true;
+    //Set smtp encryption type (ssl/tls)
+        $mail->SMTPSecure = "tls";
+    //Port to connect smtp
+        $mail->Port = "587";
+    //Set gmail username
+        //Use own email
+        $mail->Username = "rpquinones@up.edu.ph";
+    //Set gmail password
+        //Turn on 2-factor auth on your/organization email
+        // Go here https://myaccount.google.com/apppasswords
+        // Copy paste app password to this string
+        $mail->Password = "sgreoylcwheqkoad";
+    //Email subject
+        $mail->Subject = "Charging Records and Remaining Time";
+    //Set sender email
+        $mail->setFrom('someone@up.edu.ph');
+    //Enable HTML
+        $mail->isHTML(true);
+    //Email body
+        $records = getChargingRecordsForStudent($student_number);
+        $HTMLremainingCharge = generateRemainingChargeHTML($student_number);
+        $HTMLrecords = generateHTMLTableFromRecords($records);
+        //Concatenate
+        $emailBody = $HTMLremainingCharge . $HTMLrecords;
+        $mail->Body = $emailBody;
+    //Add recipient
+        $student_email = getStudentEmail($student_number);
+        $mail->addAddress($student_email);
+    //Finally send email
+        if ( $mail->send() ) {
+            echo "<script type='text/javascript'>alert('Email Sent Successfully');
+            window.location.href='main.php';</script>";
+        }else{
+            echo "<script type='text/javascript'>alert('EMAIL NOT SENT');
+            window.location.href='main.php';</script>";
+        }
+    //Closing smtp connection
+        $mail->smtpClose();
+    }
+
+    function getStudentNumberByLogID($log_id) {
+        $conn = connect();
+    
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT student_number FROM charging_log WHERE log_id = ?");
+        $stmt->bind_param("i", $log_id);
+        $stmt->execute();
+    
+        // Get the result set
+        $result = $stmt->get_result();
+    
+        // Fetch the row
+        $row = $result->fetch_assoc();
+    
+        // Get the student number
+        $student_number = $row['student_number'];
+    
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+    
+        return $student_number;
     }
 ?>

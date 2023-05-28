@@ -30,6 +30,10 @@
                     <a href="admin.php" class="active"><span class="las la-users"></span>
                     <span>Admin</span></a>
                 </li>
+                <li>
+                        <a href="report.php"><span class="las la-users"></span>
+                        <span>Report</span></a>
+                </li>
             </ul>
         </div>
     </div>

@@ -11,7 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -122,6 +121,35 @@ ALTER TABLE `student`
 --
 ALTER TABLE `charging_log`
   ADD CONSTRAINT `Foreign Key` FOREIGN KEY (`student_number`) REFERENCES `student` (`student_number`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- --------------------------------------------------------
+
+--
+-- Trigger structure for updating charge_consumed
+--
+
+DELIMITER //
+CREATE TRIGGER update_charge_consumed
+AFTER INSERT ON charging_log
+FOR EACH ROW
+BEGIN
+    UPDATE student
+    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in)) / 60
+    WHERE student_number = NEW.student_number;
+END //
+
+CREATE TRIGGER update_charge_consumed_update
+AFTER UPDATE ON charging_log
+FOR EACH ROW
+BEGIN
+    UPDATE student
+    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in)) / 60
+    WHERE student_number = NEW.student_number;
+END //
+DELIMITER ;
+
+
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
