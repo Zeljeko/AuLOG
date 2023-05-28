@@ -3,10 +3,9 @@
 
 	// end charging session
 	if($_GET['log_id'] != NULL) { 
+		$student_number = $_GET['student_number'];
 		$log_id = $_GET['log_id'];
 		$time_in = $_GET['time_in'];
-		endChargingSession($time_in, $log_id);
-		$student_number = getStudentNumberByLogID($log_id);
-		sendEmailChargingStatus($student_number);
+		endChargingSession($student_number, $time_in, $log_id);
 	}
 ?>

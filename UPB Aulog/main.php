@@ -143,7 +143,8 @@
                                     echo "<td>".$hours." hours ".$minutes." minutes</td>";
                                     echo "<td>".$hours_elapsed." hours ".$minutes_elapsed." minutes</td>";
                                     echo "<td> <a href='end_charging_session.php?
-                                    log_id=".$row['log_id'].
+                                    student_number=".$row['student_number'].
+                                    "&log_id=".$row['log_id'].
                                     "&time_in=".$row['time_in']."'>End</a></td>";
                                     echo "</tr>";
                                 }
