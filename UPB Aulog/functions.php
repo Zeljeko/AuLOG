@@ -195,7 +195,7 @@
         $rows = $result->fetch_assoc();
 
         if($rows) {
-            endChargingSession($rows['time_in'], $rows['log_id']);
+            endChargingSession($student_number, $rows['time_in'], $rows['log_id']);
 
             // Close the statement and connection
             $stmt->close();
@@ -241,7 +241,7 @@
     }
 
     // terminate charging session
-    function endChargingSession($time_in, $log_id) {
+    function endChargingSession($student_number, $time_in, $log_id) {
         // Connect to the database
         $conn = connect();
 
@@ -255,6 +255,7 @@
         $stmt->execute();
         $stmt->close();
 
+        sendEmailChargingStatus($student_number);
         echo "<script type='text/javascript'>alert('Terminated session.');
             window.location.href='main.php';</script>";
     }
