@@ -313,13 +313,18 @@ td {
     display: none;
 }
 
+#chart-header {
+    margin-left: 15px;
+    margin-top: 15px;
+}
+
 #chart-container{
-    width:600px;
-    height: 800px;
+    margin: 15px;
+    width: 350px;
+    height: 325px;
 }
 
 #chart-chart-container{
     display: flex;
-    height: 200px;
+    height: 350px;
 }
-

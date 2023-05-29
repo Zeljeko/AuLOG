@@ -66,11 +66,11 @@ if ($page === 'main') {
             </h2>
 
             <!-- searchbar -->
-            <form action='student.php' target='_self' method='post'>
+            <form action='log.php' target='_self' method='post'>
                 <div class='search-wrapper'>
                     <span class='las la-search'></span>
                     <input type='search' id='student_number' name = 'student_number' placeholder='Find Student No.' />
-                    <input type='submit' name='student' formmethod='post' style='display:none;'>
+                    <input type='submit' name='log' formmethod='post' style='display:none;'>
                 </div>
             </form>
             

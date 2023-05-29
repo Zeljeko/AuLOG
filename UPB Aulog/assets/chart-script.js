@@ -1,9 +1,9 @@
 // JavaScript function to generate the daily chart using Chart.js library
-function dailyChart(reportData) {
+function dailyChart(chartID, reportData) {
     const days = Object.keys(reportData);
     const hours = Object.values(reportData);
 
-    const ctx = document.getElementById('dailyChart').getContext('2d');
+    const ctx = document.getElementById(chartID).getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
@@ -17,9 +17,8 @@ function dailyChart(reportData) {
             }]
         },
         options: {
-            
             response: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,
@@ -36,11 +35,11 @@ function dailyChart(reportData) {
     });
 }
 
-function weeklyChart(reportData) {
+function weeklyChart(chartID, reportData) {
     const weeks = Object.keys(reportData);
     const hours = Object.values(reportData);
 
-    const ctx = document.getElementById('weeklyChart').getContext('2d');
+    const ctx = document.getElementById(chartID).getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
@@ -55,7 +54,7 @@ function weeklyChart(reportData) {
         },
         options: {
             response: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,
@@ -73,11 +72,11 @@ function weeklyChart(reportData) {
     
 }
 
-function monthlyChart(reportData) {
+function monthlyChart(chartID, reportData) {
     const months = Object.keys(reportData);
     const hours = Object.values(reportData);
 
-    const ctx = document.getElementById('monthlyChart').getContext('2d');
+    const ctx = document.getElementById(chartID).getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
@@ -91,6 +90,8 @@ function monthlyChart(reportData) {
             }]
         },
         options: {
+            response: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,

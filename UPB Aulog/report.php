@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+[<!DOCTYPE html>
 <html lang="en">
     <head>
         <?php
@@ -53,7 +53,7 @@
                     
                 ?>
 
-                <h1>All Students</h1>
+                <h1 id='chart-header'>All Students</h1>
                 <div id = "chart-chart-container">
                     <div id="chart-container">
                         <canvas id="dailyChart"></canvas>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
 
-                <h1>Science</h1>
+                <h1 id='chart-header'>Science</h1>
                 <div id = "chart-chart-container">
                     <div id="chart-container">
                         <canvas id="dailyChartCS"></canvas>
@@ -79,7 +79,7 @@
                     </div>
                 </div>
 
-                <h1>Social Sciences</h1>
+                <h1 id='chart-header'>Social Sciences</h1>
                 <div id = "chart-chart-container">
                     <div id="chart-container">
                         <canvas id="dailyChartCSS"></canvas>
@@ -92,7 +92,7 @@
                     </div>
                 </div>
 
-                <h1>Arts and Communication</h1>
+                <h1 id='chart-header'>Arts and Communication</h1>
                 <div id = "chart-chart-container">
                     <div id="chart-container">
                         <canvas id="dailyChartCAC"></canvas>
@@ -108,32 +108,32 @@
 
                 <script>
                 const dailyData = <?php echo json_encode($dailyData); ?>;
-                dailyChart(dailyData);
+                dailyChart("dailyChart", dailyData);
                 const weeklyData = <?php echo json_encode($weeklyData); ?>;
-                weeklyChart(weeklyData);
+                weeklyChart("weeklyChart", weeklyData);
                 const monthlyData = <?php echo json_encode($monthlyData); ?>;
-                monthlyChart(monthlyData);
+                monthlyChart("monthlyChart", monthlyData);
 
                 const dailyDataCS = <?php echo json_encode($dailyDataCS); ?>;
-                dailyChart(dailyDataCS, "CS");
+                dailyChart("dailyChartCS", dailyDataCS);
                 const weeklyDataCS = <?php echo json_encode($weeklyDataCS); ?>;
-                weeklyChart(weeklyDataCS, "CS");
+                weeklyChart("weeklyChartCS", weeklyDataCS);
                 const monthlyDataCS = <?php echo json_encode($monthlyDataCS); ?>;
-                monthlyChart(monthlyDataCS, "CS");
+                monthlyChart("monthlyChartCS", monthlyDataCS);
 
                 const dailyDataCSS = <?php echo json_encode($dailyDataCSS); ?>;
-                dailyChart(dailyDataCSS, "CSS");
+                dailyChart("dailyChartCSS", dailyDataCSS);
                 const weeklyDataCSS = <?php echo json_encode($weeklyDataCSS); ?>;
-                weeklyChart(weeklyDataCSS, "CSS");
+                weeklyChart("weeklyChartCSS", weeklyDataCSS);
                 const monthlyDataCSS = <?php echo json_encode($monthlyDataCSS); ?>;
-                monthlyChart(monthlyDataCSS, "CSS");
+                monthlyChart("monthlyChartCSS", monthlyDataCSS);
                 
                 const dailyDataCAC = <?php echo json_encode($dailyDataCAC); ?>;
-                dailyChart(dailyDataCAC, "CAC");
+                dailyChart("dailyChartCAC", dailyDataCAC);
                 const weeklyDataCAC = <?php echo json_encode($weeklyDataCAC); ?>;
-                weeklyChart(weeklyDataCAC, "CAC")
+                weeklyChart("weeklyChartCAC", weeklyDataCAC)
                 const monthlyDataCAC = <?php echo json_encode($monthlyDataCAC); ?>;
-                monthlyChart(monthlyDataCAC, "CAC");
+                monthlyChart("monthlyChartCAC", monthlyDataCAC);
 
 
                 </script>
