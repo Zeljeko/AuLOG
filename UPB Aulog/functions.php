@@ -428,12 +428,12 @@
         $mail->Port = "587";
     //Set gmail username
         //Use own email
-        $mail->Username = "babanaga@up.edu.ph";
+        $mail->Username = "sample@up.edu.ph";
     //Set gmail password
-        //Turn on 2-factor auth on your/organization email
+        // Turn on 2-factor auth on your/organization email
         // Go here https://myaccount.google.com/apppasswords
         // Copy paste app password to this string
-        $mail->Password = "ufdqndfwhuomsoyf";
+        $mail->Password = "sample-password";
     //Email subject
         $mail->Subject = "Charging Records and Remaining Time";
     //Set sender email
