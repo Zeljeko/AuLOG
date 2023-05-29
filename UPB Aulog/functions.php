@@ -96,6 +96,54 @@
         return $rows;
     }
 
+    // get student email
+    function getStudentEmail($student_number) {
+        // Connect to the database
+        $conn = connect();
+
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT email FROM student WHERE student_number = ?");
+        $stmt->bind_param("s", $student_number);
+        $stmt->execute();
+
+        // Bind the result to a variable
+        $stmt->bind_result($email);
+
+        // Fetch the result
+        $stmt->fetch();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        // Return the student's email
+        return $email;
+    }
+
+    // get student number by rfid tag
+    function getStudentNumber($rfid_tag) {
+        // Connect to the database
+        $conn = connect();
+
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT student_number FROM student WHERE rfid_tag = ?");
+        $stmt->bind_param("s", $rfid_tag);
+        $stmt->execute();
+
+        // Bind the result to a variable
+        $stmt->bind_result($student_number);
+
+        // Fetch the result
+        $stmt->fetch();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        // Return the student's email
+        return $student_number;
+    }
+
     // add student info
     function addStudent($rfid_tag, $first_name, $last_name, $student_number, $college, $email) {
         // Connect to the database
@@ -177,7 +225,7 @@
         $conn = connect();
 
         // get student number
-        if($student_number == '')
+        if($rfid_tag != NULL)
             $student_number = getStudentNumber($rfid_tag);
 
         // representation of active state
@@ -195,12 +243,12 @@
         $rows = $result->fetch_assoc();
 
         if($rows) {
-            endChargingSession($rows['time_in'], $rows['log_id']);
+            endChargingSession($student_number, $rows['time_in'], $rows['log_id']);
 
             // Close the statement and connection
             $stmt->close();
             $conn->close();
-        } else {
+        } else if($student_number != null) {
             $constant_id = 'next_available_id';
 
             // Prepare and execute the SELECT statement (next available id)
@@ -237,11 +285,14 @@
 
             echo "<script type='text/javascript'>alert('Session added');
                 window.location.href='../main.php';</script>";
+        } else {
+            echo "<script type='text/javascript'>alert('Invalid entry');
+                window.location.href='../main.php';</script>";
         }
     }
 
     // terminate charging session
-    function endChargingSession($time_in, $log_id) {
+    function endChargingSession($student_number, $time_in, $log_id) {
         // Connect to the database
         $conn = connect();
 
@@ -255,8 +306,153 @@
         $stmt->execute();
         $stmt->close();
 
-        echo "<script type='text/javascript'>alert('Terminated session.');
+        // calculate charge consumed
+        $charge_consumed = getTimeElapsed($log_id);
+        $hours_consumed = intdiv($charge_consumed, 60);
+        $minutes_consumed = $charge_consumed % 60;
+
+        $response = sendEmailChargingStatus($student_number);
+        echo "<script type='text/javascript'>alert('$response Terminated session. Consumed: $hours_consumed hour/s, $minutes_consumed minute/s');
             window.location.href='../main.php';</script>";
+    }
+
+    // get remaining charge
+    function getRemainingCharge($student_number) {
+        // Connect to the database
+        $conn = connect();
+
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT charge_consumed, value FROM student JOIN constants
+            WHERE student_number = ?");
+        $stmt->bind_param("s",$student_number);
+        $stmt->execute();
+
+        // Get the result set
+        $result = $stmt->get_result();
+
+        // Fetch and return the rows
+        $rows = $result->fetch_assoc();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        return $rows['value'] - $rows['charge_consumed'];
+    }
+
+    // get time elapsed
+    function getTimeElapsed($log_id) {
+        // Connect to the database
+        $conn = connect();
+
+        // Prepare, bind, and execute the SELECT statement
+        $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS time_elapsed
+            FROM charging_log WHERE log_id = ?");
+        $stmt->bind_param("i",$log_id);
+        $stmt->execute();
+
+        // Get the result set
+        $result = $stmt->get_result();
+
+        // Fetch and return the rows
+        $rows = $result->fetch_assoc();
+
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+
+        return $rows['time_elapsed'];
+    }
+
+    function generateHTMLTableFromRecords($records) {
+        // Create an empty string to hold the HTML table
+        $htmlTable = '';
+    
+        // Check if there are any records
+        if (count($records) > 0) {
+            // Start the HTML table
+            $htmlTable .= '<table>';
+            $htmlTable .= '<tr><th>Log ID</th><th>Student Number</th><th>Tag Number</th><th>Time In</th><th>Time Out</th></tr>';
+    
+            // Loop through each record and generate table rows
+            foreach ($records as $record) {
+                $htmlTable .= '<tr>';
+                $htmlTable .= '<td>' . $record['log_id'] . '</td>';
+                $htmlTable .= '<td>' . $record['student_number'] . '</td>';
+                $htmlTable .= '<td>' . $record['tag_number'] . '</td>';
+                $htmlTable .= '<td>' . $record['time_in'] . '</td>';
+                $htmlTable .= '<td>' . $record['time_out'] . '</td>';
+                $htmlTable .= '</tr>';
+            }
+    
+            // Close the HTML table
+            $htmlTable .= '</table>';
+        } else {
+            $htmlTable = 'No records found.';
+        }
+    
+        // Return the HTML table string
+        return $htmlTable;
+    }
+
+    function generateRemainingChargeHTML($student_number) {
+        // Get the remaining charge for the student
+        $hours = intdiv(getRemainingCharge($student_number), 60);
+        $minutes = getRemainingCharge($student_number) % 60;
+    
+        // Create the HTML string
+        $html = '<p>Dear student, your remaining charging hours are:</p>';
+        $html .= '<h1>' . $hours . ' hours ' . 'and '. $minutes .' minutes '. '</h1>';
+        $html .= '<p>Thank you.</p>';
+    
+        return $html;
+    }
+    
+    function sendEmailChargingStatus($student_number){
+    //Create instance of PHPMailer
+        $mail = new PHPMailer();
+    //Set mailer to use smtp
+        $mail->isSMTP();
+    //Define smtp host
+        $mail->Host = "smtp.gmail.com";
+    //Enable smtp authentication
+        $mail->SMTPAuth = true;
+    //Set smtp encryption type (ssl/tls)
+        $mail->SMTPSecure = "tls";
+    //Port to connect smtp
+        $mail->Port = "587";
+    //Set gmail username
+        //Use own email
+        $mail->Username = "rpquinones@up.edu.ph";
+    //Set gmail password
+        //Turn on 2-factor auth on your/organization email
+        // Go here https://myaccount.google.com/apppasswords
+        // Copy paste app password to this string
+        $mail->Password = "sgreoylcwheqkoad";
+    //Email subject
+        $mail->Subject = "Charging Records and Remaining Time";
+    //Set sender email
+        $mail->setFrom('someone@up.edu.ph');
+    //Enable HTML
+        $mail->isHTML(true);
+    //Email body
+        $records = getStudentLog($student_number);
+        $HTMLremainingCharge = generateRemainingChargeHTML($student_number);
+        $HTMLrecords = generateHTMLTableFromRecords($records);
+        //Concatenate
+        $emailBody = $HTMLremainingCharge . $HTMLrecords;
+        $mail->Body = $emailBody;
+    //Add recipient
+        $student_email = getStudentEmail($student_number);
+        $mail->addAddress($student_email);
+    //Finally send email
+        if ( $mail->send() ) {
+            return "Email Sent Successfully.";
+        }else {
+            return "EMAIL NOT SENT.";
+        }
+    //Closing smtp connection
+        $mail->smtpClose();
     }
 
     // output charging logs
@@ -331,52 +527,25 @@
             window.location.href='log.php';</script>";
     }
 
-    // get remaining charge
-    function getRemainingCharge($student_number) {
+    // reset charging time and clear history
+    function resetHistory() {
         // Connect to the database
         $conn = connect();
 
-        // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT charge_consumed, value FROM student JOIN constants
-            WHERE student_number = ?");
-        $stmt->bind_param("s",$student_number);
+        // Prepare and execute the DELETE statement
+        $stmt = $conn->prepare("DELETE FROM charging_log");
         $stmt->execute();
 
-        // Get the result set
-        $result = $stmt->get_result();
-
-        // Fetch and return the rows
-        $rows = $result->fetch_assoc();
+        // Prepare, bind, and execute the UPDATE statement
+        $stmt = $conn->prepare("UPDATE student SET charge_consumed = 0");
+        $stmt->execute();
 
         // Close the statement and connection
         $stmt->close();
         $conn->close();
 
-        return $rows['value'] - $rows['charge_consumed'];
-    }
-
-    // get time elapsed
-    function getTimeElapsed($log_id) {
-        // Connect to the database
-        $conn = connect();
-
-        // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS time_elapsed
-            FROM charging_log WHERE log_id = ?");
-        $stmt->bind_param("i",$log_id);
-        $stmt->execute();
-
-        // Get the result set
-        $result = $stmt->get_result();
-
-        // Fetch and return the rows
-        $rows = $result->fetch_assoc();
-
-        // Close the statement and connection
-        $stmt->close();
-        $conn->close();
-
-        return $rows['time_elapsed'];
+        echo "<script type='text/javascript'>alert('Reset successful. Redirecting you back to the admin page.');
+                window.location.href='../log.php';</script>";
     }
 
     // get maximum charge time
@@ -428,54 +597,6 @@
                 window.location.href='charging_time.php';</script>";
     }
 
-    // get student email
-    function getStudentEmail($student_number) {
-        // Connect to the database
-        $conn = connect();
-
-        // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT email FROM student WHERE student_number = ?");
-        $stmt->bind_param("s", $student_number);
-        $stmt->execute();
-
-        // Bind the result to a variable
-        $stmt->bind_result($email);
-
-        // Fetch the result
-        $stmt->fetch();
-
-        // Close the statement and connection
-        $stmt->close();
-        $conn->close();
-
-        // Return the student's email
-        return $email;
-    }
-
-    // get student number
-    function getStudentNumber($rfid_tag) {
-        // Connect to the database
-        $conn = connect();
-
-        // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT student_number FROM student WHERE rfid_tag = ?");
-        $stmt->bind_param("s", $rfid_tag);
-        $stmt->execute();
-
-        // Bind the result to a variable
-        $stmt->bind_result($student_number);
-
-        // Fetch the result
-        $stmt->fetch();
-
-        // Close the statement and connection
-        $stmt->close();
-        $conn->close();
-
-        // Return the student's email
-        return $student_number;
-    }
-
     // get numbe of tags
     function getNumberOfTags() {
         // Connect to the database
@@ -525,27 +646,6 @@
                 window.location.href='number_of_tags.php';</script>";
     }
 
-    // reset charging time and clear history
-    function resetHistory() {
-        // Connect to the database
-        $conn = connect();
-
-        // Prepare and execute the DELETE statement
-        $stmt = $conn->prepare("DELETE FROM charging_log");
-        $stmt->execute();
-
-        // Prepare, bind, and execute the UPDATE statement
-        $stmt = $conn->prepare("UPDATE student SET charge_consumed = 0");
-        $stmt->execute();
-
-        // Close the statement and connection
-        $stmt->close();
-        $conn->close();
-
-        echo "<script type='text/javascript'>alert('Reset successful. Redirecting you back to the admin page.');
-                window.location.href='../log.php';</script>";
-    }
-
     function generateDailyReport() {
         $conn = connect();
     
@@ -585,8 +685,6 @@
         return $reportData;
     }
     
-    
-
     function generateWeeklyReport() {
         $conn = connect();
     
@@ -660,154 +758,6 @@
     
         return $reportData;
     }    
-
-    
-    
-
-    function getChargingRecordsForStudent($student_number) {
-        $conn = connect();
-    
-        // Fetch Records
-        $sql = "SELECT * FROM charging_log WHERE student_number = '$student_number'";
-        $result = $conn->query($sql);
-    
-        // Check if records exist
-        if ($result->num_rows > 0) {
-            $records = array();
-    
-            // Fetch records and store them in an array
-            while ($row = $result->fetch_assoc()) {
-                $records[] = $row;
-            }
-    
-            // Free the result set
-            $result->free_result();
-        } else {
-            $records = array(); // Empty array if no records found
-        }
-    
-        // Close the database connection
-        $conn->close();
-    
-        return $records;
-    }    
-
-    function generateHTMLTableFromRecords($records) {
-        // Create an empty string to hold the HTML table
-        $htmlTable = '';
-    
-        // Check if there are any records
-        if (count($records) > 0) {
-            // Start the HTML table
-            $htmlTable .= '<table>';
-            $htmlTable .= '<tr><th>Log ID</th><th>Student Number</th><th>Tag Number</th><th>Time In</th><th>Time Out</th></tr>';
-    
-            // Loop through each record and generate table rows
-            foreach ($records as $record) {
-                $htmlTable .= '<tr>';
-                $htmlTable .= '<td>' . $record['log_id'] . '</td>';
-                $htmlTable .= '<td>' . $record['student_number'] . '</td>';
-                $htmlTable .= '<td>' . $record['tag_number'] . '</td>';
-                $htmlTable .= '<td>' . $record['time_in'] . '</td>';
-                $htmlTable .= '<td>' . $record['time_out'] . '</td>';
-                $htmlTable .= '</tr>';
-            }
-    
-            // Close the HTML table
-            $htmlTable .= '</table>';
-        } else {
-            $htmlTable = 'No records found.';
-        }
-    
-        // Return the HTML table string
-        return $htmlTable;
-    }
-
-    function generateRemainingChargeHTML($student_number) {
-        // Get the remaining charge for the student
-        $hours = intdiv(getRemainingCharge($student_number), 60);
-        $minutes = getRemainingCharge($student_number) % 60;
-    
-        // Create the HTML string
-        $html = '<p>Dear student, your remaining charging hours are:</p>';
-        $html .= '<h1>' . $hours . ' hours ' . 'and '. $minutes .' minutes '. '</h1>';
-        $html .= '<p>Thank you.</p>';
-    
-        return $html;
-    }
-    
-    function sendEmailChargingStatus($student_number){
-    //Create instance of PHPMailer
-        $mail = new PHPMailer();
-    //Set mailer to use smtp
-        $mail->isSMTP();
-    //Define smtp host
-        $mail->Host = "smtp.gmail.com";
-    //Enable smtp authentication
-        $mail->SMTPAuth = true;
-    //Set smtp encryption type (ssl/tls)
-        $mail->SMTPSecure = "tls";
-    //Port to connect smtp
-        $mail->Port = "587";
-    //Set gmail username
-        //Use own email
-        $mail->Username = "rpquinones@up.edu.ph";
-    //Set gmail password
-        //Turn on 2-factor auth on your/organization email
-        // Go here https://myaccount.google.com/apppasswords
-        // Copy paste app password to this string
-        $mail->Password = "sgreoylcwheqkoad";
-    //Email subject
-        $mail->Subject = "Charging Records and Remaining Time";
-    //Set sender email
-        $mail->setFrom('someone@up.edu.ph');
-    //Enable HTML
-        $mail->isHTML(true);
-    //Email body
-        $records = getChargingRecordsForStudent($student_number);
-        $HTMLremainingCharge = generateRemainingChargeHTML($student_number);
-        $HTMLrecords = generateHTMLTableFromRecords($records);
-        //Concatenate
-        $emailBody = $HTMLremainingCharge . $HTMLrecords;
-        $mail->Body = $emailBody;
-    //Add recipient
-        $student_email = getStudentEmail($student_number);
-        $mail->addAddress($student_email);
-    //Finally send email
-        if ( $mail->send() ) {
-            echo "<script type='text/javascript'>alert('Email Sent Successfully');
-            window.location.href='main.php';</script>";
-        }else{
-            echo "<script type='text/javascript'>alert('EMAIL NOT SENT');
-            window.location.href='main.php';</script>";
-        }
-    //Closing smtp connection
-        $mail->smtpClose();
-    }
-
-    function getStudentNumberByLogID($log_id) {
-        $conn = connect();
-    
-        // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT student_number FROM charging_log WHERE log_id = ?");
-        $stmt->bind_param("i", $log_id);
-        $stmt->execute();
-    
-        // Get the result set
-        $result = $stmt->get_result();
-    
-        // Fetch the row
-        $row = $result->fetch_assoc();
-    
-        // Get the student number
-        $student_number = $row['student_number'];
-    
-        // Close the statement and connection
-        $stmt->close();
-        $conn->close();
-    
-        return $student_number;
-    }
 
     function generateDailyReportCollege($collegeName) {
         $conn = connect();
@@ -950,7 +900,4 @@
     
         return $reportData;
     }
-    
-    
-    
 ?>

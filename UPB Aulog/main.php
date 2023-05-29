@@ -35,7 +35,7 @@
                     ?>
                     </div>
                     <div class="card-single">
-                        <form class="form-input" id="rfid_form" action='start_charging_session.php' method='post'>
+                        <form class="form-input" id="rfid_form" action='db-requests/start_charging_session.php' method='post'>
                             <div class="input-wrapper">
                                 <input class="field_input" type = 'text' id = 'field_input' placeholder ="Place your ID onto the scanner">
                                 <input class="field_sn" type = 'text' id = 'student_number' name = 'student_number'>
@@ -101,7 +101,7 @@
                                             "&tag_number=".$row['tag_number'].
                                             "'> <span class='las la-edit'></span></a> 
                                             
-                                            <a class='end' href='end_charging_session.php?
+                                            <a class='end' href='db-requests/end_charging_session.php?
                                             student_number=".$row['student_number'].
                                             "&log_id=".$row['log_id'].
                                             "&time_in=".$row['time_in']."'> <span class='las la-undo'></span></a>
