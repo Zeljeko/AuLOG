@@ -372,16 +372,21 @@
         if (count($records) > 0) {
             // Start the HTML table
             $htmlTable .= '<table>';
-            $htmlTable .= '<tr><th>Log ID</th><th>Student Number</th><th>Tag Number</th><th>Time In</th><th>Time Out</th></tr>';
+            $htmlTable .= '<tr><th>Log ID</th><th>Student Number</th><th>Time In</th><th>Time Out</th><th>Charge Consumed</th></tr>';
     
             // Loop through each record and generate table rows
             foreach ($records as $record) {
+                // compute hours and minutes consumed
+                $hours_consumed = intdiv($record['consumed'], 60);
+                $minutes_consumed = $record['consumed'] % 60;
+
+
                 $htmlTable .= '<tr>';
                 $htmlTable .= '<td>' . $record['log_id'] . '</td>';
                 $htmlTable .= '<td>' . $record['student_number'] . '</td>';
-                $htmlTable .= '<td>' . $record['tag_number'] . '</td>';
                 $htmlTable .= '<td>' . $record['time_in'] . '</td>';
                 $htmlTable .= '<td>' . $record['time_out'] . '</td>';
+                $htmlTable .= '<td>' . $hours_consumed . ' hour/s and  ' . $minutes_consumed . ' minute/s</td>';
                 $htmlTable .= '</tr>';
             }
     
@@ -423,12 +428,12 @@
         $mail->Port = "587";
     //Set gmail username
         //Use own email
-        $mail->Username = "rpquinones@up.edu.ph";
+        $mail->Username = "babanaga@up.edu.ph";
     //Set gmail password
         //Turn on 2-factor auth on your/organization email
         // Go here https://myaccount.google.com/apppasswords
         // Copy paste app password to this string
-        $mail->Password = "sgreoylcwheqkoad";
+        $mail->Password = "ufdqndfwhuomsoyf";
     //Email subject
         $mail->Subject = "Charging Records and Remaining Time";
     //Set sender email
@@ -484,7 +489,9 @@
         $conn = connect();
 
         // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT * FROM charging_log WHERE student_number = ? ORDER BY time_in, time_out ASC");
+        $stmt = $conn->prepare("SELECT log_id, student_number, tag_number, time_in, time_out,
+            TIMESTAMPDIFF(MINUTE, time_in, time_out) AS consumed
+            FROM charging_log WHERE student_number = ? ORDER BY time_in, time_out ASC");
         $stmt->bind_param("s", $student_number);
         $stmt->execute();
         
