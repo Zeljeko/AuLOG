@@ -41,7 +41,6 @@
                         <div>
                             <span class='las la-user'></span>
                         </div>
-                    
                     </div>
                     <div class="card-input">
                         <div>
@@ -50,7 +49,7 @@
                             </h1>
                             <span>Accepts RFID and Barcode</span>
                         </div>
-                        <form class="form-input" id="rfid_form" action='db-requests/start_charging_session.php' method='post'>
+                        <form class="form-input" id="rfid_form" action='db-requests/start_charging_session.php' method='post' autocomplete="off">
                             <div class="input-wrapper">
                                 <input class="field_input" type = 'text' id = 'field_input' placeholder ="Place your ID onto the scanner">
                                 <input class="field_sn" type = 'text' id = 'student_number' name = 'student_number' style="display: none;">
@@ -90,9 +89,10 @@
                             <thead>
                                 <tr>
                                     <td id="actionHead" style="display:none;">Action</td>
+                                    <td id="rfidHead" style="display:none;">RFID Tag</td>
+                                    <td id="snHead" style="display:none;">Student Number</td>
                                     <td>Time In</td>
                                     <td>Tag No. </td>
-                                    <td>RFID Tag</td>
                                     <td>Name</td>
                                     <td>College</td>
                                     <td>Remaining Charge</td>

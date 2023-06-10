@@ -39,8 +39,8 @@
                                     <tr>
                                         <td>Actions</td>
                                         <td>RFID Tag</td>
-                                        <td>Name</td>
                                         <td>Student No.</td>
+                                        <td>Name</td>
                                         <td>College</td>
                                         <td>Email Address</td>
                                         <td>Charge Consumed</td>
@@ -76,8 +76,8 @@
                                             <a class='end' href='db-requests/student_delete.php?student_number=".$row['student_number'].
                                             "'><span class='las la-minus'></span></a></td>";
                                             echo "<td>".$row['rfid_tag']."</td>";
-                                            echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
                                             echo "<td>".$row['student_number']."</td>";
+                                            echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
                                             echo "<td>".$row['college']."</td>";
                                             echo "<td>".$row['email']."</td>";
                                             echo "<td>".$hours." hours ".$minutes." minutes</td>";

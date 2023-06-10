@@ -169,7 +169,7 @@ main {
     background-repeat: no-repeat;
     background-size: cover;
     /* background: #f0f0f0; */
-    min-height: calc(100vh - 90px);
+    min-height: 100vh;
     box-shadow: 0 0 200px rgba(0,0,0,0.7) inset;
 }
 
@@ -177,6 +177,19 @@ main {
     display: grid;
     grid-template-columns: 1fr 5fr;
     grid-gap: 2rem;
+}
+
+.cards-report{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 2rem;
+}
+
+.card-report{
+    background: #fff;
+    padding: 1rem;
+    border-radius: 20px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
 }
 
 .card-single {
@@ -240,7 +253,7 @@ main {
 }
 
 .card-header {
-    padding: 1rem 2.5rem;
+    padding: 1.5rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -316,6 +329,7 @@ table .end{
 }
 
 thead tr {
+    background-color: #f0f0f0;
     border-top: 1px solid #dddddd;
     border-bottom: 1px solid #dddddd;
 }
@@ -326,7 +340,7 @@ thead td {
 }
 
 td {
-    padding: .5rem 1rem;
+    padding: 1rem 1.5rem;
     font-size: .9rem;
     color: #222;
 }
@@ -336,10 +350,12 @@ td {
     margin-top: 15px;
 }
 
-#chart-container{
-    margin: 15px;
-    width: 350px;
-    height: 325px;
+#chart-container{;
+    margin: auto;
+    width: auto;
+    height: 300px;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
 }
 
 #chart-chart-container{
