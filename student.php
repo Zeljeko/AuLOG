@@ -23,12 +23,12 @@
 
             <!-- primary content -->
             <main>
-                <div class="recent-grid">
-                    <div class="Users card">
+                <div class="grid">
+                    <div class="card">
                         <!-- table title -->
                         <div class="card-header">
                             <h2><span class="las la-users"></span> Students</h2>
-                            <h2><a href='student_add.php'><span class='las la-plus'></span>  Add User </a> </h2>
+                            <h3><a href='student_add.php'><span class='las la-plus'></span>  Add User </a></h3>
                         </div>
 
                         <!-- table content -->

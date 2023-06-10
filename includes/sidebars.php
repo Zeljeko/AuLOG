@@ -9,6 +9,7 @@ if ($page === 'main') {
         <div class='sidebar'>
             <div class='sidebar-brand'>
                 <h2><span class='las la-atom'></span> <span>AuLOG</span></h2>
+                <small>UPB Library Automated Charging Log System</small>
             </div>
 
             <div class='sidebar-menu'>
@@ -64,6 +65,7 @@ if ($page === 'main') {
         <div class='sidebar'>
             <div class='sidebar-brand'>
                 <h2><span class='las la-atom'></span> <span>AuLOG</span></h2>
+                <small>UPB Library Automated Charging Log System</small>
             </div>
 
             <div class='sidebar-menu'>
@@ -107,6 +109,7 @@ if ($page === 'main') {
         <div class='sidebar'>
             <div class='sidebar-brand'>
                 <h2><span class='las la-atom'></span> <span>AuLOG</span></h2>
+                <small>UPB Library Automated Charging Log System</small>
             </div>
 
             <div class='sidebar-menu'>
@@ -150,6 +153,7 @@ if ($page === 'main') {
         <div class='sidebar'>
             <div class='sidebar-brand'>
                 <h2><span class='las la-atom'></span> <span>AuLOG</span></h2>
+                <small>UPB Library Automated Charging Log System</small>
             </div>
 
             <div class='sidebar-menu'>
@@ -193,6 +197,7 @@ if ($page === 'main') {
         <div class='sidebar'>
             <div class='sidebar-brand'>
                 <h2><span class='las la-atom'></span> <span>AuLOG</span></h2>
+                <small>UPB Library Automated Charging Log System</small>
             </div>
 
             <div class='sidebar-menu'>
@@ -236,6 +241,7 @@ if ($page === 'main') {
         <div class='sidebar'>
             <div class='sidebar-brand'>
                 <h2><span class='las la-atom'></span> <span>AuLOG</span></h2>
+                <small>UPB Library Automated Charging Log System System</small>
             </div>
 
             <div class='sidebar-menu'>

@@ -16,7 +16,7 @@ $( document ).ready(function() {
                     }else{
                         row.append($('<td>').html("<a class='edit' href='tag_edit.php?log_id='"+data.log_id+"'&student_number='"+data.student_number+"'&tag_number='"+data.tag_number+"'> <span class='las la-edit'></span></a> <a class='end' href='db-requests/end_charging_session.php?student_number="+data.student_number+"&log_id="+data.log_id+"&time_in="+data.time_in+"'> <span class='las la-undo'></span></a>").attr('style','display:none;'));
                     }
-                    
+                    row.append($('<td>').text(data.time_in));
                     row.append($('<td>').text(data.tag_number));
                     row.append($('<td>').text(data.rfid_tag));
                     row.append($('<td>').text(data.first_name+" "+data.last_name));
@@ -56,7 +56,7 @@ $( document ).ready(function() {
 
                     $('#dynamicTable tbody').append(row);
                 });
-
+                
                 // Update Tag System
                 var valuesToRemove = getColumnValues(1); // Array containing values of the tag column
                 $.each(valuesToRemove, function(index, value) {
@@ -105,7 +105,7 @@ $( document ).ready(function() {
     //Constant ID Field Focus
     var constantField = setInterval(function(){$('#field_input').focus();}, 1000);
     
-    //Admin Options
+    //Admin Options 
     $('#admin').on('click', function() {
         clearInterval(constantField);
         $('#passwordField').show();
@@ -123,6 +123,7 @@ $( document ).ready(function() {
             $('#adminOptions').show();
             setInterval(function(){$('#field_input').focus();}, 1000);
             $('#actionHead').show();
+            $('#seeall').show();
         }
     });
 });

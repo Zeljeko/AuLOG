@@ -27,21 +27,36 @@
 
                 <!-- active user count -->
                 <div class="cards">
-                    <div class="card-single" id = "active-number">
-                    <?php
-                        require 'functions.php';
-                        $result = getActiveStudents();
-                            echo "<h1>".count($result)."</h1><h1> currently active </h1>";
-                    ?>
-                    </div>
                     <div class="card-single">
+                        <div>
+                            <h1>
+                            <?php
+                            require 'functions.php';
+                            $result = getActiveStudents();
+                            echo count($result);
+                            ?>
+                            </h1>
+                            <span>Active Users</span>
+                        </div>
+                        <div>
+                            <span class='las la-user'></span>
+                        </div>
+                    
+                    </div>
+                    <div class="card-input">
+                        <div>
+                            <h1>
+                            <span class='las la-search'></span> ID Scanner 
+                            </h1>
+                            <span>Accepts RFID and Barcode</span>
+                        </div>
                         <form class="form-input" id="rfid_form" action='db-requests/start_charging_session.php' method='post'>
                             <div class="input-wrapper">
                                 <input class="field_input" type = 'text' id = 'field_input' placeholder ="Place your ID onto the scanner">
                                 <input class="field_sn" type = 'text' id = 'student_number' name = 'student_number' style="display: none;">
                                 <input class="field_rfid" type = 'text' id = 'rfid_tag' name = 'rfid_tag' style="display: none;">
                                 
-                                <select class="tag_number" id = 'tag_number' name = 'tag_number'>
+                                <select class="tag_number" id = 'tag_number' name = 'tag_number' style="display: none;">
                                 <?php
                                     $number_of_tags = getNumberOfTags();
 
@@ -61,10 +76,11 @@
                 </div>
 
                 <!-- table of active users -->
-                <div class="recent-grid Users card">
+                <div class="grid card">
                     <!-- table title -->
                     <div class="card-header">
                         <h2><span class="las la-users"></span> Users</h2>
+                        <h3><a href='student.php' id="seeall" style="display:none;"> See All <span class='las la-arrow-circle-right'></span></a></h3>
                     </div>
 
                     <!-- table content -->
@@ -74,6 +90,7 @@
                             <thead>
                                 <tr>
                                     <td id="actionHead" style="display:none;">Action</td>
+                                    <td>Time In</td>
                                     <td>Tag No. </td>
                                     <td>RFID Tag</td>
                                     <td>Name</td>
@@ -84,38 +101,6 @@
                             </thead>
   
                             <tbody> 
-                                <?php
-                                    // $result = getActiveStudents();
-
-                                    // // displaying student entries
-                                    // foreach($result AS $row) {     
-                                    //     $hours = intdiv(getRemainingCharge($row['student_number']), 60);
-                                    //     $minutes = getRemainingCharge($row['student_number']) % 60;
-                                        
-                                    //     $hours_elapsed = intdiv(getTimeElapsed($row['log_id']), 60);
-                                    //     $minutes_elapsed = getTimeElapsed($row['log_id']) % 60;
-
-                                    //     echo "<tr>";
-                                    //     echo "<td> <a class='edit' href='tag_edit.php?log_id=".$row['log_id'].
-                                    //         "&student_number=".$row['student_number'].
-                                    //         "&tag_number=".$row['tag_number'].
-                                    //         "'> <span class='las la-edit'></span></a> 
-                                            
-                                    //         <a class='end' href='db-requests/end_charging_session.php?
-                                    //         student_number=".$row['student_number'].
-                                    //         "&log_id=".$row['log_id'].
-                                    //         "&time_in=".$row['time_in']."'> <span class='las la-undo'></span></a>
-                                            
-                                    //         </td>";
-                                    //     echo "<td>".$row['tag_number']."</td>";
-                                    //     echo "<td>".$row['rfid_tag']."</td>";
-                                    //     echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
-                                    //     echo "<td>".$row['college']."</td>";
-                                    //     echo "<td>".$hours." hours ".$minutes." minutes</td>";
-                                    //     echo "<td>".$hours_elapsed." hours ".$minutes_elapsed." minutes</td>";
-                                    //     echo "</tr>";
-                                    // }
-                                ?>
                             </tbody>
                         </table>
                     </div>

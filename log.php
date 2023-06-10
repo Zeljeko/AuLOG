@@ -25,7 +25,7 @@
                         <!-- table title -->
                         <div class="card-header">
                             <h2><span class="las la-battery-full"></span> Charging Entries </h2>
-                            <h2><a href='db-requests/reset_history.php'><span class='las la-redo'></span> Reset Charge History </a> </h2>
+                            <h3><a href='db-requests/reset_history.php'><span class='las la-redo'></span> Reset Charge History </a> </h3>
                         </div>
 
                         <!-- table content -->
