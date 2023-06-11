@@ -56,11 +56,16 @@
 
                                     // output charging logs
                                     foreach($result AS $row) {
+                                        $log_state = NULL;
+                                        
                                         if($row['state'] == '0')
                                             $log_state = "inactive";
-                                        else
+                                        elseif($row['state'] == '1')
                                             $log_state = 'active';
                                         
+                                        if($log_state == NULL)
+                                            continue;
+
                                         echo "<tr>";
                                         echo "<td>".$row['log_id']."</td>";
                                         echo "<td>".$row['tag_number']."</td>";

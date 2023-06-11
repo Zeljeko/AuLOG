@@ -610,8 +610,12 @@
         // Connect to the database
         $conn = connect();
 
+        // representation of old transaction
+        $old_state = -1;
+
         // Prepare and execute the DELETE statement
-        $stmt = $conn->prepare("DELETE FROM charging_log");
+        $stmt = $conn->prepare("UPDATE charging_log SET state = ?");
+        $stmt->bind_param("i", $old_state);
         $stmt->execute();
 
         // Prepare, bind, and execute the UPDATE statement
