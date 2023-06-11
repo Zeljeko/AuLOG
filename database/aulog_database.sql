@@ -1,15 +1,16 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 24, 2023 at 04:55 PM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 8.0.13
+-- Generation Time: Jun 11, 2023 at 03:13 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -30,7 +31,7 @@ CREATE TABLE `admin` (
   `admin_id` int(11) NOT NULL,
   `username` text NOT NULL,
   `password` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -42,10 +43,17 @@ CREATE TABLE `charging_log` (
   `log_id` int(11) NOT NULL,
   `student_number` varchar(12) NOT NULL,
   `tag_number` int(11) NOT NULL,
-  `time_in` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `time_in` timestamp NOT NULL DEFAULT current_timestamp(),
   `time_out` timestamp NOT NULL DEFAULT current_timestamp(),
   `state` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `charging_log`
+--
+
+INSERT INTO `charging_log` (`log_id`, `student_number`, `tag_number`, `time_in`, `time_out`, `state`) VALUES
+(1, '2020-08792', 19, '2023-06-11 11:10:46', '2023-06-11 14:36:20', 0);
 
 -- --------------------------------------------------------
 
@@ -56,7 +64,7 @@ CREATE TABLE `charging_log` (
 CREATE TABLE `constants` (
   `constant_id` varchar(20) NOT NULL,
   `value` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `constants`
@@ -64,7 +72,7 @@ CREATE TABLE `constants` (
 
 INSERT INTO `constants` (`constant_id`, `value`) VALUES
 ('charging_time', 1200),
-('next_available_id', 1),
+('next_available_id', 7),
 ('number_of_tags', 25);
 
 -- --------------------------------------------------------
@@ -81,7 +89,14 @@ CREATE TABLE `student` (
   `college` text DEFAULT NULL,
   `email` text NOT NULL,
   `charge_consumed` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `student`
+--
+
+INSERT INTO `student` (`student_number`, `rfid_tag`, `first_name`, `last_name`, `college`, `email`, `charge_consumed`) VALUES
+('2020-08792', '1231231231', 'Benjamin', 'Banaga', 'CS', 'babanaga@up.edu.ph', 186);
 
 --
 -- Indexes for dumped tables
@@ -121,36 +136,7 @@ ALTER TABLE `student`
 --
 ALTER TABLE `charging_log`
   ADD CONSTRAINT `Foreign Key` FOREIGN KEY (`student_number`) REFERENCES `student` (`student_number`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- --------------------------------------------------------
-
---
--- Trigger structure for updating charge_consumed
---
-
-/* DELIMITER //
-CREATE TRIGGER update_charge_consumed
-AFTER INSERT ON charging_log
-FOR EACH ROW
-BEGIN
-    UPDATE student
-    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in)) / 60
-    WHERE student_number = NEW.student_number;
-END //
-
-CREATE TRIGGER update_charge_consumed_update
-AFTER UPDATE ON charging_log
-FOR EACH ROW
-BEGIN
-    UPDATE student
-    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in)) / 60
-    WHERE student_number = NEW.student_number;
-END //
-DELIMITER ;
-
-
-
-COMMIT; */
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
