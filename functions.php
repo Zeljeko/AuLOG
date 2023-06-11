@@ -982,4 +982,77 @@
     
         return $reportData;
     }
+
+    function generateCollegeReport() {
+        // Replace 'connect()' with your database connection code
+        $conn = connect();
+    
+        // Prepare the SQL statement to get total charging hours for each college
+        $sql = "SELECT student.college AS college, SUM(TIMESTAMPDIFF(MINUTE, charging_log.time_in, charging_log.time_out)) AS total_minutes
+                FROM charging_log
+                JOIN student ON charging_log.student_number = student.student_number
+                GROUP BY student.college";
+        $result = $conn->query($sql);
+    
+        // Store the results in an array
+        $reportData = array();
+    
+        // Fill in the actual hours from the query results
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $college = $row['college'];
+                $totalMinutes = $row['total_minutes'];
+                $totalHours = floor($totalMinutes / 60); // Convert minutes to hours
+    
+                // Store the college and total hours in the report data array
+                $reportData[$college] = $totalHours;
+            }
+        }
+    
+        return $reportData;
+    }
+    
+
+    function downloadReports(){
+        $conn = connect();
+
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+        
+        // Query to retrieve data from the charging_log table
+        $query = "SELECT * FROM charging_log";
+        $result = $conn->query($query);
+        
+        if ($result->num_rows > 0) {
+            // Open a new file for writing
+            $file = fopen("charging_log_export.csv", "w");
+        
+            // Write the CSV header
+            $header = array("log_id", "student_number", "tag_number", "time_in", "time_out", "state");
+            fputcsv($file, $header);
+        
+            // Write data rows
+            while ($row = $result->fetch_assoc()) {
+                $data = array($row['log_id'], $row['student_number'], $row['tag_number'], $row['time_in'], $row['time_out'], $row['state']);
+                fputcsv($file, $data);
+            }
+        
+            // Close the file
+            fclose($file);
+        
+            // Generate a downloadable link
+            $fileUrl = "charging_log_export.csv";
+            $fileName = basename($fileUrl);
+            ?>
+            <!-- Display the download button -->
+            <a href="<?php echo $fileUrl; ?>" download="<?php echo $fileName; ?>">Download Charging Log CSV</a>
+            <?php
+        } else {
+            echo "No data found.";
+        }
+        
+        // Close the database connection
+        $conn->close();
+    }
 ?>

@@ -106,6 +106,8 @@
                     $dailyDataCAC = generateDailyReportCollege('Arts and Communication');
                     $weeklyDataCAC = generateWeeklyReportCollege('Arts and Communication');
                     $monthlyDataCAC = generateMonthlyReportCollege('Arts and Communication');
+
+                    $allCollegesData = generateCollegeReport();
                 ?>
                 <div class="cards-report">
                     <div class="grid card card-report">
@@ -139,7 +141,7 @@
                             <h2> Charge Consumption of Colleges </h2>
                         </div>
                         <div id="chart-container">
-                            <canvas id="dailyPieChartCombined"></canvas>
+                            <canvas id="collegeChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -174,5 +176,8 @@
     weeklyChart("weeklyChartCAC", weeklyDataCAC)
     const monthlyDataCAC = <?php echo json_encode($monthlyDataCAC); ?>;
     monthlyChart("monthlyChartCAC", monthlyDataCAC);
+
+    const allCollegesDataPie = <?php echo json_encode($allCollegesData); ?>;
+    pieChart("collegeChart", allCollegesDataPie);
     </script>
 </html>

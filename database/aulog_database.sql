@@ -124,6 +124,30 @@ ALTER TABLE `charging_log`
   ADD CONSTRAINT `Foreign Key` FOREIGN KEY (`student_number`) REFERENCES `student` (`student_number`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
+--
+-- Trigger structure for updating charge_consumed
+--
+
+DELIMITER //
+CREATE TRIGGER update_charge_consumed
+AFTER INSERT ON charging_log
+FOR EACH ROW
+BEGIN
+    UPDATE student
+    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in)) / 60
+    WHERE student_number = NEW.student_number;
+END //
+
+CREATE TRIGGER update_charge_consumed_update
+AFTER UPDATE ON charging_log
+FOR EACH ROW
+BEGIN
+    UPDATE student
+    SET charge_consumed = charge_consumed + TIME_TO_SEC(TIMEDIFF(NEW.time_out, NEW.time_in)) / 60
+    WHERE student_number = NEW.student_number;
+END //
+DELIMITER ;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
