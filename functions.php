@@ -753,7 +753,7 @@
             while ($row = $result->fetch_assoc()) {
                 $date = $row['day'];
                 $day = date('d', strtotime($date));
-                $totalMinutes = (float)$row['total_minutes'];
+                $totalMinutes = $row['total_minutes'];
                 $totalHours = floor($totalMinutes / 60); // Convert minutes to hours
     
                 // Store the day and total hours in the report data array

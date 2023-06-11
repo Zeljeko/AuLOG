@@ -48,13 +48,6 @@ CREATE TABLE `charging_log` (
   `state` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `charging_log`
---
-
-INSERT INTO `charging_log` (`log_id`, `student_number`, `tag_number`, `time_in`, `time_out`, `state`) VALUES
-(1, '2020-08792', 19, '2023-06-11 11:10:46', '2023-06-11 14:36:20', 0);
-
 -- --------------------------------------------------------
 
 --
@@ -90,13 +83,6 @@ CREATE TABLE `student` (
   `email` text NOT NULL,
   `charge_consumed` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `student`
---
-
-INSERT INTO `student` (`student_number`, `rfid_tag`, `first_name`, `last_name`, `college`, `email`, `charge_consumed`) VALUES
-('2020-08792', '1231231231', 'Benjamin', 'Banaga', 'CS', 'babanaga@up.edu.ph', 186);
 
 --
 -- Indexes for dumped tables
