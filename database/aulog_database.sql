@@ -128,7 +128,7 @@ ALTER TABLE `charging_log`
 -- Trigger structure for updating charge_consumed
 --
 
-DELIMITER //
+/* DELIMITER //
 CREATE TRIGGER update_charge_consumed
 AFTER INSERT ON charging_log
 FOR EACH ROW
@@ -150,7 +150,7 @@ DELIMITER ;
 
 
 
-COMMIT;
+COMMIT; */
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

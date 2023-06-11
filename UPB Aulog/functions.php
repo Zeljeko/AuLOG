@@ -28,8 +28,6 @@
 
     // output single student info
     function getStudent($student_number) {
-        if($student_number == "")
-            return getStudents();
         // Connect to the database
         $conn = connect();
 
@@ -74,30 +72,6 @@
     }
 
     // output active students
-    function getActiveStudentsAjax() {
-        // Connect to the database
-        $conn = connect();
-
-        // Prepare and execute the SELECT statement;
-        $query = "SELECT student.student_number, tag_number, rfid_tag, first_name, last_name, college, log_id, time_in
-        FROM student JOIN charging_log
-        ON student.student_number = charging_log.student_number
-        WHERE state = 1 ORDER BY time_in ASC";
-
-        $stmt = $conn->prepare($query);
-        $stmt->execute();
-
-        // Get the result set
-        $result = $stmt->get_result();
-
-        $rows = $result->fetch_all(MYSQLI_ASSOC);
-        header('Content-Type: application/json');
-        echo json_encode($rows);
-        // Close the statement and connection
-        $stmt->close();
-        $conn->close();
-    }
-
     function getActiveStudents() {
         // Connect to the database
         $conn = connect();
@@ -118,7 +92,7 @@
         // Close the statement and connection
         $stmt->close();
         $conn->close();
-        
+    
         return $rows;
     }
 
@@ -232,19 +206,9 @@
         // Connect to the database
         $conn = connect();
 
-        // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT time_in FROM charging_log WHERE log_id = ?");
-        $stmt->bind_param("i",$log_id);
-        $stmt->execute();
-
-        // Get the result set, fetch and return the rows
-        $result = $stmt->get_result();
-        $rows = $result->fetch_assoc();
-        $time_in = $rows['time_in'];
-
         // Prepare, bind, and execute the UPDATE statement
-        $stmt = $conn->prepare("UPDATE charging_log SET time_in = ?, tag_number = ? WHERE log_id = ?");
-        $stmt->bind_param("sii", $time_in, $tag_number, $log_id);
+        $stmt = $conn->prepare("UPDATE charging_log SET tag_number = ? WHERE log_id = ?");
+        $stmt->bind_param("ii", $tag_number, $log_id);
         $stmt->execute();
 
         // Close the statement and connection
@@ -340,27 +304,12 @@
             state = ? WHERE log_id = ?");
         $stmt->bind_param("sii", $time_in, $inactive_state, $log_id);
         $stmt->execute();
+        $stmt->close();
 
-        // calculate charge consumed 
+        // calculate charge consumed
         $charge_consumed = getTimeElapsed($log_id);
         $hours_consumed = intdiv($charge_consumed, 60);
         $minutes_consumed = $charge_consumed % 60;
-
-        // calculate current charge consumed, before transacction
-        $stmt = $conn->prepare("SELECT charge_consumed FROM student WHERE student_number = ?");
-        $stmt->bind_param("s", $student_number);
-        $stmt->execute();
-
-        // Get the remaining charge time
-        $result = $stmt->get_result();
-        $rows = $result->fetch_assoc();
-        $remaining_charge = $rows['charge_consumed'] + $charge_consumed;
-    
-        // update remaining charge
-        $stmt = $conn->prepare("UPDATE student SET charge_consumed = ? WHERE student_number = ?");
-        $stmt->bind_param("is", $remaining_charge, $student_number);
-        $stmt->execute();
-        $stmt->close();
 
         $response = sendEmailChargingStatus($student_number);
         echo "<script type='text/javascript'>alert('$response Terminated session. Consumed: $hours_consumed hour/s, $minutes_consumed minute/s');
@@ -397,29 +346,10 @@
         $conn = connect();
 
         // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT state FROM charging_log WHERE log_id = ?");
+        $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS time_elapsed
+            FROM charging_log WHERE log_id = ?");
         $stmt->bind_param("i",$log_id);
         $stmt->execute();
-
-        // Get the result set
-        $result = $stmt->get_result();
-
-        // Fetch and return the rows
-        $rows = $result->fetch_assoc();
-
-        if($rows['state'] == 1) {
-            // Prepare, bind, and execute the SELECT statement
-            $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS time_elapsed
-            FROM charging_log WHERE log_id = ?");
-            $stmt->bind_param("i",$log_id);
-            $stmt->execute();
-        } else {
-            // Prepare, bind, and execute the SELECT statement
-            $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, time_out) AS time_elapsed
-            FROM charging_log WHERE log_id = ?");
-            $stmt->bind_param("i",$log_id);
-            $stmt->execute();
-        }
 
         // Get the result set
         $result = $stmt->get_result();
@@ -498,12 +428,12 @@
         $mail->Port = "587";
     //Set gmail username
         //Use own email
-        $mail->Username = "sample@up.edu.ph";
+        $mail->Username = "babanaga@up.edu.ph";
     //Set gmail password
         // Turn on 2-factor auth on your/organization email
         // Go here https://myaccount.google.com/apppasswords
         // Copy paste app password to this string
-        $mail->Password = "sample-password";
+        $mail->Password = "ufdqndfwhuomsoyf";
     //Email subject
         $mail->Subject = "Charging Records and Remaining Time";
     //Set sender email
@@ -554,13 +484,12 @@
 
     // output student charging logs
     function getStudentLog($student_number) {
-        if($student_number == "")
-            return getChargingLog();
+        
         // Connect to the database
         $conn = connect();
 
         // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT log_id, student_number, tag_number, time_in, time_out, state,
+        $stmt = $conn->prepare("SELECT log_id, student_number, tag_number, time_in, time_out,
             TIMESTAMPDIFF(MINUTE, time_in, time_out) AS consumed
             FROM charging_log WHERE student_number = ? ORDER BY time_in, time_out ASC");
         $stmt->bind_param("s", $student_number);
