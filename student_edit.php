@@ -4,6 +4,7 @@
         <?php
                 include 'includes/head.php'
         ?>
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     </head>
     <body>
 
@@ -25,11 +26,12 @@
                 <div class="recent-grid Users card">
                     <!-- Form Title -->
                     <div class="card-header">
-                        <h2><span class="las la-users"></span> Edit Student Info </h2>
+                        <h2><span class="las la-users"></span> Edit Student Information</h2>
+                        <h3><a href='student.php'>Return</a></h3>
                     </div>
 
                     <!-- edit functionallity -->
-                    <div class="card-body">
+                    <div class="card-body formfield">
                         <?php       
                         require 'functions.php';
 
@@ -62,45 +64,88 @@
                             $hours = intdiv($charge_consumed,60);
                             $minutes = $charge_consumed % 60;
 
-                            // form heading i
                             echo "<form action='student_edit.php' target='_self' method='post'>";
-                            echo "<table width='100%'>";
-                            echo "<tr>";
-                            echo "<td>RFID Tag</td>";
-                            echo "<td>First Name</td>";
-                            echo "<td>Last Name</td>";
-                            echo "<td>Student Number</td>";
-                            echo "</tr>";
+                            echo "<div>";
+                            echo "<label for='rfid_tag'>RFID Tag</label>";
+                            echo "<div class='input-wrapper'>";
+                            echo "<span class='las la-hashtag'></span>";
+                            echo "<input type='text' id='rfid_tag' name='rfid_tag' placeholder='10-digit RFID Tag' minlength='10' maxlength='10' value='".$rfid_tag."'/>";
+                            echo "</div>";
+                            echo "</div>";
+
+                            echo "<div>";
+                            echo "<label for='student_number'>Student Number</label>";
+                            echo "<div class='input-wrapper'>";
+                            echo "<span class='las la-address-card'></span>";
+                            echo "<input type='text' id='student_number' name='student_number' placeholder='xxxx-xxxxx' value='".$student_number."'/>";
+                            echo "</div>";
+                            echo "</div>";
                             
-                            // input fields i
-                            echo "<tbody> <tr>";
-                            echo "<td> <input type='text' id='rfid_tag' name='rfid_tag' value='".$rfid_tag."'/> </td>";
-                            echo "<td> <input type='text' id='first_name' name='first_name' value='".$first_name."'/> </td>";
-                            echo "<td> <input type='text' id='last_name' name='last_name' value='".$last_name."'/> </td>";
-                            echo "<td> <input type='text' id='student_number' name='student_number' value='".$student_number."'/> </td>";
-                            echo "</tr>";
+                            echo "<div>";
+                            echo "<label for='first_name'>First Name</label>";
+                            echo "<div class='input-wrapper'>";
+                            echo "<span class='las la-user'></span>";
+                            echo "<input type='text' id='first_name' name='first_name' placeholder='First Name' value='".$first_name."'/>";
+                            echo "</div>";
+                            echo "</div>";
+                            
+                            echo "<div>";
+                            echo "<label for='last_name'>Last Name</label>";
+                            echo "<div class='input-wrapper'>";
+                            echo "<span class='las la-user'></span>";
+                            echo "<input type='text' id='last_name' name='last_name' placeholder='Last Name' value='".$last_name."'/>";
+                            echo "</div>";
+                            echo "</div>";
+                            
+                            echo "<div>";
+                            echo "<label for='college'>College</label>";
+                            echo "<div class='input-wrapper'>";
+                            echo "<span class='las la-university'></span>";
+                            echo "<select id='college' name='college'>";
+                            if($college=="Arts and Communication"){
+                                echo "<option value='Arts and Communication'>Arts and Communication</option>";
+                                echo "<option selected value='Science'>Science</option>";
+                                echo "<option value='Social Sciences'>Social Science</option>";
+                            }elseif($college=="Science"){
+                                echo "<option value='Arts and Communication'>Arts and Communication</option>";
+                                echo "<option selected value='Science'>Science</option>";
+                                echo "<option value='Social Sciences'>Social Science</option>";
+                            }elseif($college=="Social Sciences"){
+                                echo "<option value='Arts and Communication'>Arts and Communication</option>";
+                                echo "<option value='Science'>Science</option>";
+                                echo "<option selected value='Social Sciences'>Social Science</option>";
+                            }
+                            echo "</select>";
+                            echo "</div>";
+                            echo "</div>";
+                            
+                            echo "<div>";
+                            echo "<label for='email'>Email</label>";
+                            echo "<div class='input-wrapper'>";
+                            echo "<span class='las la-envelope'></span>";
+                            echo "<input type='text' id='email' name='email' placeholder='sample@email.com' value='".$email."'/>";
+                            echo "</div>";
+                            echo "</div>";
 
-                            // form heading ii
-                            echo "<tr>";
-                            echo "<td>College</td>";
-                            echo "<td>Email Address</td>";
-                            echo "<td>Hours</td>";
-                            echo "<td>Minutes</td>";
-                            echo "</tr>";
+                            echo "<div>";
+                            echo "<label for='email'>Hours Consumed</label>";
+                            echo "<div class='input-wrapper'>";
+                            echo "<span class='las la-battery'></span>";
+                            echo "<input type='number' id='hours' name='hours' placeholder='Set hours consumed' value='".$hours."'/>";
+                            echo "</div>";
+                            echo "</div>";
 
-                            // input fields ii
-                            echo "<tr>";
-                            echo "<td> <input type='text' id='college' name='college' value='".$college."'/> </td>";
-                            echo "<td> <input type='text' id='email' name='email' value='".$email."'/> </td>";
-                            echo "<td> <input type='number' id='hours' name='hours' value='".$hours."'/> </td>";
-                            echo "<td> <input type='number' id='minutes' name='minutes' value='".$minutes."'/> </td>";
-                            echo "</tr> </tbody>";
-                            echo "</table>";
+                            echo "<div>";
+                            echo "<label for='email'>Minutes Consumed</label>";
+                            echo "<div class='input-wrapper'>";
+                            echo "<span class='las la-battery'></span>";
+                            echo "<input type='number' id='minutes' name='minutes' placeholder='Set minutes consumed' value='".$minutes."'/>";
+                            echo "</div>";
+                            echo "</div>";
 
                             echo "<input type='hidden' id='condition' name='condition' value='".$student_number."'/>";
-
                             // forward data to self
-                            echo "<br/><input type='submit' name='student_edit' formmethod='post' value='Apply'/>";
+                            echo "<input class='submit' type='submit' name='student_edit' formmethod='post' value='Apply'/>";
                             echo "</form>";
                         }
                         ?>
@@ -108,5 +153,13 @@
                 </div>
             </main>
         </div>
+        <script>
+        $(".submit").click(function(event) {
+            if (confirm("Are you sure you want to proceed this edit?")) {
+            } else {
+                event.preventDefault();
+            }
+        });
+        </script>
     </body>
 </html>

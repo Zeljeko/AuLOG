@@ -75,6 +75,20 @@ $( document ).ready(function() {
                 
                 // Update Next Tag
                 $('#nextTag').html($('#tag_number option:first').val());
+
+                // Confirmation Boxes
+                $(".edit").click(function(event) {
+                    if (confirm("Are you sure you want to proceed to editing this session's tag?")) {
+                    } else {
+                        event.preventDefault();
+                    }
+                });
+                $(".end").click(function(event) {
+                    if (confirm("Are you sure you want to proceed to end this session?")) {
+                    } else {
+                        event.preventDefault();
+                    }
+                });
             },
             error: function(xhr, status, error) {
             console.log('Error:', error);
@@ -103,11 +117,9 @@ $( document ).ready(function() {
         let sn= /^\d{4}-\d{5}$/; // Example pattern: xxxx-xxxxxx
 
         if (rfid.test(inputValue)) {
-            console.log('rfid pattern');
             $('#rfid_tag').val(inputValue);
             $("#id_submit").click();
         }else if (sn.test(inputValue)){
-            console.log('student number pattern');
             $('#student_number').val(inputValue);
             $("#id_submit").click();
         }

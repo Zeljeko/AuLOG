@@ -28,8 +28,6 @@
 
     // output single student info
     function getStudent($student_number) {
-        if($student_number == "")
-            return getStudents();
         // Connect to the database
         $conn = connect();
 
@@ -186,7 +184,7 @@
         $stmt->close();
         $conn->close();
 
-        echo "<script type='text/javascript'>alert('Entry added. Redirecting you back to the Student Information page.');
+        echo "<script type='text/javascript'>alert('Entry added. Redirecting you back to the admin page.');
             window.location.href='student.php';</script>";
     }
 
@@ -204,7 +202,7 @@
         $stmt->close();
         $conn->close();
 
-        echo "<script type='text/javascript'>alert('Entry deleted. Redirecting you back to the Student Information page.');
+        echo "<script type='text/javascript'>alert('Entry deleted. Redirecting you back to the admin page.');
             window.location.href='../student.php';</script>";
     }
 
@@ -224,7 +222,7 @@
         $stmt->close();
         $conn->close();
 
-        echo "<script type='text/javascript'>alert('Edit successful. Redirecting you back to the Student Information page.');
+        echo "<script type='text/javascript'>alert('Edit successful. Redirecting you back to the admin page.');
                 window.location.href='student.php';</script>";
     }
 
@@ -232,19 +230,9 @@
         // Connect to the database
         $conn = connect();
 
-        // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT time_in FROM charging_log WHERE log_id = ?");
-        $stmt->bind_param("i",$log_id);
-        $stmt->execute();
-
-        // Get the result set, fetch and return the rows
-        $result = $stmt->get_result();
-        $rows = $result->fetch_assoc();
-        $time_in = $rows['time_in'];
-
         // Prepare, bind, and execute the UPDATE statement
-        $stmt = $conn->prepare("UPDATE charging_log SET time_in = ?, tag_number = ? WHERE log_id = ?");
-        $stmt->bind_param("sii", $time_in, $tag_number, $log_id);
+        $stmt = $conn->prepare("UPDATE charging_log SET tag_number = ? WHERE log_id = ?");
+        $stmt->bind_param("ii", $tag_number, $log_id);
         $stmt->execute();
 
         // Close the statement and connection
@@ -320,8 +308,7 @@
             $conn->close();
 
             echo "<script type='text/javascript'>alert('Session added');
-                window.location.href='../main.php';
-                </script>";
+                window.location.href='../main.php';</script>";
         } else {
             echo "<script type='text/javascript'>alert('Invalid entry');
                 window.location.href='../main.php';</script>";
@@ -341,27 +328,12 @@
             state = ? WHERE log_id = ?");
         $stmt->bind_param("sii", $time_in, $inactive_state, $log_id);
         $stmt->execute();
+        $stmt->close();
 
-        // calculate charge consumed 
+        // calculate charge consumed
         $charge_consumed = getTimeElapsed($log_id);
         $hours_consumed = intdiv($charge_consumed, 60);
         $minutes_consumed = $charge_consumed % 60;
-
-        // calculate current charge consumed, before transacction
-        $stmt = $conn->prepare("SELECT charge_consumed FROM student WHERE student_number = ?");
-        $stmt->bind_param("s", $student_number);
-        $stmt->execute();
-
-        // Get the remaining charge time
-        $result = $stmt->get_result();
-        $rows = $result->fetch_assoc();
-        $remaining_charge = $rows['charge_consumed'] + $charge_consumed;
-    
-        // update remaining charge
-        $stmt = $conn->prepare("UPDATE student SET charge_consumed = ? WHERE student_number = ?");
-        $stmt->bind_param("is", $remaining_charge, $student_number);
-        $stmt->execute();
-        $stmt->close();
 
         $response = sendEmailChargingStatus($student_number);
         echo "<script type='text/javascript'>alert('$response Terminated session. Consumed: $hours_consumed hour/s, $minutes_consumed minute/s');
@@ -398,29 +370,10 @@
         $conn = connect();
 
         // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT state FROM charging_log WHERE log_id = ?");
+        $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS time_elapsed
+            FROM charging_log WHERE log_id = ?");
         $stmt->bind_param("i",$log_id);
         $stmt->execute();
-
-        // Get the result set
-        $result = $stmt->get_result();
-
-        // Fetch and return the rows
-        $rows = $result->fetch_assoc();
-
-        if($rows['state'] == 1) {
-            // Prepare, bind, and execute the SELECT statement
-            $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, CURRENT_TIMESTAMP()) AS time_elapsed
-            FROM charging_log WHERE log_id = ?");
-            $stmt->bind_param("i",$log_id);
-            $stmt->execute();
-        } else {
-            // Prepare, bind, and execute the SELECT statement
-            $stmt = $conn->prepare("SELECT TIMESTAMPDIFF(MINUTE, time_in, time_out) AS time_elapsed
-            FROM charging_log WHERE log_id = ?");
-            $stmt->bind_param("i",$log_id);
-            $stmt->execute();
-        }
 
         // Get the result set
         $result = $stmt->get_result();
@@ -555,13 +508,12 @@
 
     // output student charging logs
     function getStudentLog($student_number) {
-        if($student_number == "")
-            return getChargingLog();
+        
         // Connect to the database
         $conn = connect();
 
         // Prepare, bind, and execute the SELECT statement
-        $stmt = $conn->prepare("SELECT log_id, student_number, tag_number, time_in, time_out, state,
+        $stmt = $conn->prepare("SELECT log_id, student_number, tag_number, time_in, time_out,
             TIMESTAMPDIFF(MINUTE, time_in, time_out) AS consumed
             FROM charging_log WHERE student_number = ? ORDER BY time_in, time_out ASC");
         $stmt->bind_param("s", $student_number);
@@ -611,12 +563,8 @@
         // Connect to the database
         $conn = connect();
 
-        // representation of old transaction
-        $old_state = -1;
-
         // Prepare and execute the DELETE statement
-        $stmt = $conn->prepare("UPDATE charging_log SET state = ?");
-        $stmt->bind_param("i", $old_state);
+        $stmt = $conn->prepare("DELETE FROM charging_log");
         $stmt->execute();
 
         // Prepare, bind, and execute the UPDATE statement
@@ -982,78 +930,5 @@
         }
     
         return $reportData;
-    }
-
-    function generateCollegeReport() {
-        // Replace 'connect()' with your database connection code
-        $conn = connect();
-    
-        // Prepare the SQL statement to get total charging hours for each college
-        $sql = "SELECT student.college AS college, SUM(TIMESTAMPDIFF(MINUTE, charging_log.time_in, charging_log.time_out)) AS total_minutes
-                FROM charging_log
-                JOIN student ON charging_log.student_number = student.student_number
-                GROUP BY student.college";
-        $result = $conn->query($sql);
-    
-        // Store the results in an array
-        $reportData = array();
-    
-        // Fill in the actual hours from the query results
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $college = $row['college'];
-                $totalMinutes = $row['total_minutes'];
-                $totalHours = floor($totalMinutes / 60); // Convert minutes to hours
-    
-                // Store the college and total hours in the report data array
-                $reportData[$college] = $totalHours;
-            }
-        }
-    
-        return $reportData;
-    }
-    
-
-    function downloadReports(){
-        $conn = connect();
-
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-        
-        // Query to retrieve data from the charging_log table
-        $query = "SELECT * FROM charging_log";
-        $result = $conn->query($query);
-        
-        if ($result->num_rows > 0) {
-            // Open a new file for writing
-            $file = fopen("charging_log_export.csv", "w");
-        
-            // Write the CSV header
-            $header = array("log_id", "student_number", "tag_number", "time_in", "time_out", "state");
-            fputcsv($file, $header);
-        
-            // Write data rows
-            while ($row = $result->fetch_assoc()) {
-                $data = array($row['log_id'], $row['student_number'], $row['tag_number'], $row['time_in'], $row['time_out'], $row['state']);
-                fputcsv($file, $data);
-            }
-        
-            // Close the file
-            fclose($file);
-        
-            // Generate a downloadable link
-            $fileUrl = "charging_log_export.csv";
-            $fileName = basename($fileUrl);
-            ?>
-            <!-- Display the download button -->
-            <a href="<?php echo $fileUrl; ?>" download="<?php echo $fileName; ?>">Download Charging Log CSV</a>
-            <?php
-        } else {
-            echo "No data found.";
-        }
-        
-        // Close the database connection
-        $conn->close();
     }
 ?>

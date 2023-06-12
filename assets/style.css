@@ -195,8 +195,46 @@ main {
 
 .cards {
     display: grid;
-    grid-template-columns: 20% auto auto;
+    grid-template-columns: 20% auto;
     grid-gap: 2rem;
+}
+
+.cards-config {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 2rem;
+}
+
+.cards-config form{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1rem;
+}
+
+.cards-config form div{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    padding: 1rem;
+}
+
+.cards-config form div select:hover{
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
+    transition: 0.5s;
+}
+
+.cards-config form div select,
+.input-charge{
+    text-align: center;
+    outline: none;
+    border: none;
+    height: 100px;
+    width: 200px;
+    font-size: 5rem;
+    font: bold;
+    border-radius: 30px;
 }
 
 .card {
@@ -208,6 +246,121 @@ main {
 
 .card-body {
     padding: 0rem 1rem 1rem 1rem;
+}
+
+.config {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-around;
+}
+
+.config select {
+    text-align: center;
+    border: none;
+    outline: none;
+}
+
+.formfield{
+    padding: 1rem;
+}
+
+.formfield form{
+    display: grid;
+    grid-template-columns: auto;
+}
+
+.submit {
+    background: none;
+    font-size: larger;
+    padding: .5rem 1rem;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    min-height: 50px;
+    transition: 0.5s;
+}
+
+.submit-config{
+    background: none;
+    font-size: larger;
+    padding: .5rem 1rem;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    min-height: 50px;
+    transition: 0.5s;
+    width: 200px;
+    height: 100px;
+}
+
+.submit:hover, 
+.submit-config:hover {
+    background: var(--main-color);
+    color: #f0f0f0;
+    transition: .5s;
+    cursor: pointer;
+}
+
+.formfield div{
+    margin-right: 21.5%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.formfield div label{
+    padding: .75rem;
+}
+
+.formfield div select{
+    text-align: center;
+    border: none;
+    outline: none;
+}
+
+.input-wrapper{
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+.input-wrapper input{
+    height: 100%;
+    padding: .5rem;
+    border: none;
+    outline: none;
+}
+
+.input-wrapper span {
+    display: inline-block;
+    font-size: 1.25rem;
+}
+
+.input-pass-wrapper{
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    overflow-x: hidden;
+    width: 90%;
+}
+
+.input-pass-wrapper input{
+    height: 100%;
+    padding: .5rem;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+.input-pass-wrapper span {
+    display: inline-block;
+    font-size: 1.25rem;
 }
 
 .cards-report{
@@ -270,6 +423,7 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #dddddd;
 }
 
 .card-header a{
@@ -290,7 +444,7 @@ main {
     justify-content: center;
 }
 
-.input-wrapper {
+.input-id-wrapper {
     border: 1px solid #ccc;
     border-radius: 30px;
     height: 50px;
@@ -300,13 +454,13 @@ main {
     width: 90%;
 }
 
-.input-wrapper span {
+.input-id-wrapper span {
     display: inline-block;
     padding: 0rem 1rem;
     font-size: 1.75rem;
 }
 
-.input-wrapper input {
+.input-id-wrapper input {
     height: 100%;
     padding: .5rem;
     border: none;

@@ -4,6 +4,7 @@
         <?php
             include 'includes/head.php'
         ?>
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     </head>
     <body>
         <?php
@@ -24,11 +25,12 @@
                 <div class="recent-grid Users card">
                     <!-- Form Title -->
                     <div class="card-header">
-                        <h2><span class="las la-battery-full"></span> Edit Charging History </h2>
+                        <h2><span class="las la-battery-full"></span> Edit Charging Log </h2>
+                        <h3><a href='log.php'>Return</a></h3>
                     </div>
 
                     <!-- edit functionallity -->
-                    <div class="card-body">
+                    <div class="card-body formfield">
                         <?php
                             require 'functions.php';
 
@@ -59,42 +61,67 @@
                                 else
                                     $log_state = 'active';
 
-                                // form heading i
                                 echo "<form action='log_edit.php' target='_self' method='post'>";
-                                echo "<table width='100%'>";
-                                echo "<thead></thead>";
-                                echo "<tr>";
-                                echo "<td>Log ID</td>";
-                                echo "<td>Tag No.</td>";
-                                echo "<td>Student No.</td>";
-                                echo "</tr>";
-                                                    
-                                // input fields i
-                                echo "<tbody> <tr>";
-                                echo "<td> <input type='text' id='log_id' name='log_id' value='".$log_id."'/> </td>";
-                                echo "<td> <input type='int' id='tag_number' name='tag_number' value='".$tag_number."'/> </td>";
-                                echo "<td> <input type='text' id='student_number' name='student_number' value='".$student_number."'/> </td>";
-                                echo "</tr>";
+                                echo "<div>";
+                                echo "<label for='log_id'>Log ID</label>";
+                                echo "<div class='input-wrapper'>";
+                                echo "<span class='las la-hashtag'></span>";
+                                echo "<input type='text' id='log_id' name='log_id' placeholder='Log ID' value='".$log_id."'/>";
+                                echo "</div>";
+                                echo "</div>";
 
-                                // form heading ii
-                                echo "<tr>";
-                                echo "<td>Time-in</td>";
-                                echo "<td>Time-out</td>";
-                                echo "<td>State</td>";
-                                echo "</tr>";
-
-                                // input fields ii
-                                echo "<tr>";
-                                echo "<td> <input type='text' id='time_in' name='time_in' value='".$time_in."'/> </td>";
-                                echo "<td> <input type='text' id='time_out' name='time_out' value='".$time_out."'/> </td>";
-                                echo "<td> <input type='text' id='state' name='state' value='".$log_state."'/> </td>";
-                                echo "</tr> </tbody>";
-                                echo "</table>";
+                                echo "<div>";
+                                echo "<label for='tag_number'>Tag Number</label>";
+                                echo "<div class='input-wrapper'>";
+                                echo "<span class='las la-address-card'></span>";
+                                echo "<input type='int' id='tag_number' name='tag_number' placeholder='Log ID' maxlength='2' value='".$tag_number."'/>";
+                                echo "</div>";
+                                echo "</div>";
+                                
+                                echo "<div>";
+                                echo "<label for='student_number'>Student Number</label>";
+                                echo "<div class='input-wrapper'>";
+                                echo "<span class='las la-user'></span>";
+                                echo "<input type='text' id='student_number' name='student_number' placeholder='xxxx-xxxxx' value='".$student_number."'/>";
+                                echo "</div>";
+                                echo "</div>";
+                                
+                                echo "<div>";
+                                echo "<label for='time_in'>Time Logged In</label>";
+                                echo "<div class='input-wrapper'>";
+                                echo "<span class='las la-user'></span>";
+                                echo "<input type='datetime-local' id='time_in' name='time_in' value='".$time_in."'/>";
+                                echo "</div>";
+                                echo "</div>";
+                                
+                                echo "<div>";
+                                echo "<label for='time_in'>Time Logged Out</label>";
+                                echo "<div class='input-wrapper'>";
+                                echo "<span class='las la-user'></span>";
+                                echo "<input type='datetime-local' id='time_out' name='time_out' value='".$time_out."'/>";
+                                echo "</div>";
+                                echo "</div>";
+                                
+                                echo "<div>";
+                                echo "<label for='state'>State</label>";
+                                echo "<div class='input-wrapper'>";
+                                echo "<span class='las la-university'></span>";
+                                echo "<select id='state' name='state'>";
+                                if($log_state=="active"){
+                                    echo "<option selected value='active'>Active</option>";
+                                    echo "<option value='active'>Active</option>";
+                                }elseif($log_state=="inactive"){
+                                    echo "<option value='active'>Active</option>";
+                                    echo "<option selected value='inactive'>Inactive</option>";
+                                }
+                                echo "</select>";
+                                echo "</div>";
+                                echo "</div>";
 
                                 echo "<input type='hidden' id='condition' name='condition' value='".$log_id."'/>";
 
                                 // forward data to self
-                                echo "<br/><input type='submit' name='log_edit' formmethod='post' value='Apply'/>";
+                                echo "<input class='submit' type='submit' name='log_edit' formmethod='post' value='Apply'/>";
                                 echo "</form>";
                             }
                         ?>
@@ -102,5 +129,13 @@
                 </div>
             </main>
         </div>
+        <script>
+        $(".submit").click(function(event) {
+            if (confirm("Are you sure you want to proceed this edit?")) {
+            } else {
+                event.preventDefault();
+            }
+        });
+        </script>
     </body>
 </html>

@@ -29,63 +29,6 @@
             ?>
 
             <!-- primary content -->
-            <!-- <main>
-                <div class="recent-grid Users card">
-
-                <h1 id='chart-header'>All Students</h1>
-                <div id = "chart-chart-container">
-                    <div id="chart-container">
-                        <canvas id="dailyChart"></canvas>
-                    </div>
-                    <div id="chart-container">
-                        <canvas id="weeklyChart"></canvas>
-                    </div>
-                    <div id="chart-container">
-                        <canvas id="monthlyChart"></canvas>
-                    </div>
-                </div>
-
-                <h1 id='chart-header'>Science</h1>
-                <div id = "chart-chart-container">
-                    <div id="chart-container">
-                        <canvas id="dailyChartCS"></canvas>
-                    </div>
-                    <div id="chart-container">
-                        <canvas id="weeklyChartCS"></canvas>
-                    </div>
-                    <div id="chart-container">
-                        <canvas id="monthlyChartCS"></canvas>
-                    </div>
-                </div>
-
-                <h1 id='chart-header'>Social Sciences</h1>
-                <div id = "chart-chart-container">
-                    <div id="chart-container">
-                        <canvas id="dailyChartCSS"></canvas>
-                    </div>
-                    <div id="chart-container">
-                        <canvas id="weeklyChartCSS"></canvas>
-                    </div>
-                    <div id="chart-container">
-                        <canvas id="monthlyChartCSS"></canvas>
-                    </div>
-                </div>
-
-                <h1 id='chart-header'>Arts and Communication</h1>
-                <div id = "chart-chart-container">
-                    <div id="chart-container">
-                        <canvas id="dailyChartCAC"></canvas>
-                    </div>
-                    <div id="chart-container">
-                        <canvas id="weeklyChartCAC"></canvas>
-                    </div>
-                    <div id="chart-container">
-                        <canvas id="monthlyChartCAC"></canvas>
-                    </div>
-                </div>
-
-                </div>
-            </main> -->
 
             <main>
                 <?php
@@ -112,7 +55,7 @@
                 <div class="cards-report">
                     <div class="grid card card-report">
                         <div class="card-header">
-                            <h2><span class="las la-users"></span> Daily Usage</h2>
+                            <h2><span class="las la-users"></span> Daily Usage of All Students</h2>
                         </div>
                         <div id="chart-container">
                             <canvas id="dailyChart"></canvas>
@@ -120,7 +63,7 @@
                     </div>
                     <div class="grid card card-report">
                         <div class="card-header">
-                            <h2><span class="las la-users"></span> Weekly Usage</h2>
+                            <h2><span class="las la-users"></span> Weekly Usage of All Students</h2>
                         </div>
                         <div id="chart-container">
                             <canvas id="weeklyChart"></canvas>
@@ -128,23 +71,99 @@
                     </div>
                     <div class="grid card card-report">
                         <div class="card-header">
-                            <h2><span class="las la-users"></span> Monthly Usage</h2>
+                            <h2><span class="las la-users"></span> Monthly Usage of All Students</h2>
                         </div>
                         <div id="chart-container">
                             <canvas id="monthlyChart"></canvas>
                         </div>
                     </div>
                 </div>
+
+
                 <div class="cards-report">
                     <div class="grid card card-report">
                         <div class="card-header">
-                            <h2> Charge Consumption of Colleges </h2>
+                            <h2><span class="las la-users"></span> Daily Usage of CAC</h2>
                         </div>
                         <div id="chart-container">
-                            <canvas id="collegeChart"></canvas>
+                            <canvas id="dailyChartCAC"></canvas>
+                        </div>
+                    </div>
+                    <div class="grid card card-report">
+                        <div class="card-header">
+                            <h2><span class="las la-users"></span> Weekly Usage of CAC</h2>
+                        </div>
+                        <div id="chart-container">
+                            <canvas id="weeklyChartCAC"></canvas>
+                        </div>
+                    </div>
+                    <div class="grid card card-report">
+                        <div class="card-header">
+                            <h2><span class="las la-users"></span> Monthly Usage of CAC</h2>
+                        </div>
+                        <div id="chart-container">
+                            <canvas id="monthlyChartCAC"></canvas>
                         </div>
                     </div>
                 </div>
+
+
+                <div class="cards-report">
+                    <div class="grid card card-report">
+                        <div class="card-header">
+                            <h2><span class="las la-users"></span> Daily Usage of CS</h2>
+                        </div>
+                        <div id="chart-container">
+                            <canvas id="dailyChartCS"></canvas>
+                        </div>
+                    </div>
+                    <div class="grid card card-report">
+                        <div class="card-header">
+                            <h2><span class="las la-users"></span> Weekly Usage of CS</h2>
+                        </div>
+                        <div id="chart-container">
+                            <canvas id="weeklyChartCS"></canvas>
+                        </div>
+                    </div>
+                    <div class="grid card card-report">
+                        <div class="card-header">
+                            <h2><span class="las la-users"></span> Monthly Usage of CS</h2>
+                        </div>
+                        <div id="chart-container">
+                            <canvas id="monthlyChartCS"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="cards-report">
+                    <div class="grid card card-report">
+                        <div class="card-header">
+                            <h2><span class="las la-users"></span> Daily Usage of CSS</h2>
+                        </div>
+                        <div id="chart-container">
+                            <canvas id="dailyChartCSS"></canvas>
+                        </div>
+                    </div>
+                    <div class="grid card card-report">
+                        <div class="card-header">
+                            <h2><span class="las la-users"></span> Weekly Usage of CSS</h2>
+                        </div>
+                        <div id="chart-container">
+                            <canvas id="weeklyChartCSS"></canvas>
+                        </div>
+                    </div>
+                    <div class="grid card card-report">
+                        <div class="card-header">
+                            <h2><span class="las la-users"></span> Monthly Usage of CSS</h2>
+                        </div>
+                        <div id="chart-container">
+                            <canvas id="monthlyChartCSS"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+
             </main>
         </div>
     </body>
@@ -176,8 +195,5 @@
     weeklyChart("weeklyChartCAC", weeklyDataCAC)
     const monthlyDataCAC = <?php echo json_encode($monthlyDataCAC); ?>;
     monthlyChart("monthlyChartCAC", monthlyDataCAC);
-
-    const allCollegesDataPie = <?php echo json_encode($allCollegesData); ?>;
-    pieChart("collegeChart", allCollegesDataPie);
     </script>
 </html>
