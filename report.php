@@ -163,6 +163,17 @@
                     </div>
                 </div>
 
+                <div class="cards-report">
+                    <div class="grid card card-report">
+                        <div class="card-header">
+                            <h2><span class="las la-users"></span> Consumption of Colleges</h2>
+                        </div>
+                        <div id="chart-container">
+                            <canvas id="collegeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
 
             </main>
         </div>
@@ -195,5 +206,8 @@
     weeklyChart("weeklyChartCAC", weeklyDataCAC)
     const monthlyDataCAC = <?php echo json_encode($monthlyDataCAC); ?>;
     monthlyChart("monthlyChartCAC", monthlyDataCAC);
+
+    const allCollegesDataPie = <?php echo json_encode($allCollegesData); ?>;
+    pieChart("collegeChart", allCollegesDataPie);
     </script>
 </html>
