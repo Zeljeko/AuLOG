@@ -613,12 +613,17 @@
         // representation of old transaction
         $old_state = -1;
 
-        // Prepare and execute the DELETE statement
+        // terminate all ongoing transactions
+        $stmt = $conn->prepare("UPDATE charging_log SET time_out = CURRENT_TIMESTAMP(), state = 0
+            WHERE state = 1");
+        $stmt->execute();
+
+        // change all states to old-state
         $stmt = $conn->prepare("UPDATE charging_log SET state = ?");
         $stmt->bind_param("i", $old_state);
         $stmt->execute();
 
-        // Prepare, bind, and execute the UPDATE statement
+        // reset all student charge consumed
         $stmt = $conn->prepare("UPDATE student SET charge_consumed = 0");
         $stmt->execute();
 
