@@ -432,6 +432,8 @@
             // Loop through each record and generate table rows
             foreach ($records as $record) {
                 // compute hours and minutes consumed
+                if($record['state'] != 0)
+                    continue;
                 $hours_consumed = intdiv($record['consumed'], 60);
                 $minutes_consumed = $record['consumed'] % 60;
 
