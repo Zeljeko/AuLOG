@@ -44,7 +44,7 @@
                             } else { // segment for outputting form
                                 $number_of_tags = getNumberOfTags();
                                 // form heading
-                                echo "<form action='number_of_tags.php' target='_self' method='post'>";
+                                echo "<form action='config.php' target='_self' method='post'>";
                                 echo "<div>";
                                 echo "<select id='tag_number' name='tag_number'>";
                                 $tag_number = 1;
@@ -84,7 +84,7 @@
                                 $charging_time = getMaximumChargingTime();
 
                                 // form heading
-                                echo "<form action='charging_time.php' target='_self' method='post'>";
+                                echo "<form action='config.php' target='_self' method='post'>";
                                 echo "<div>";
                                 echo "<label for='charge_time'>Allotted Charge (Minutes)</label>";
                                 echo "<input class='input-charge' type='number' id='charge_time' name='charge_time' value='".$charging_time."'/>";

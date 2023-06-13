@@ -661,7 +661,7 @@
         $conn->close();
 
         echo "<script type='text/javascript'>alert('Edit successful. Redirecting you back to the admin page.');
-                window.location.href='charging_time.php';</script>";
+                window.location.href='config.php';</script>";
     }
 
     // get numbe of tags
@@ -710,7 +710,7 @@
         $conn->close();
 
         echo "<script type='text/javascript'>alert('Edit successful. Redirecting you back to the admin page.');
-                window.location.href='number_of_tags.php';</script>";
+                window.location.href='config.php';</script>";
     }
 
     function generateDailyReport() {
