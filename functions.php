@@ -346,22 +346,6 @@
         $hours_consumed = intdiv($charge_consumed, 60);
         $minutes_consumed = $charge_consumed % 60;
 
-        // calculate current charge consumed, before transacction
-        $stmt = $conn->prepare("SELECT charge_consumed FROM student WHERE student_number = ?");
-        $stmt->bind_param("s", $student_number);
-        $stmt->execute();
-
-        // Get the remaining charge time
-        $result = $stmt->get_result();
-        $rows = $result->fetch_assoc();
-        $remaining_charge = $rows['charge_consumed'] + $charge_consumed;
-    
-        // update remaining charge
-        $stmt = $conn->prepare("UPDATE student SET charge_consumed = ? WHERE student_number = ?");
-        $stmt->bind_param("is", $remaining_charge, $student_number);
-        $stmt->execute();
-        $stmt->close();
-
         $response = sendEmailChargingStatus($student_number);
         echo "<script type='text/javascript'>alert('$response Terminated session. Consumed: $hours_consumed hour/s, $minutes_consumed minute/s');
             window.location.href='../main.php';</script>";
