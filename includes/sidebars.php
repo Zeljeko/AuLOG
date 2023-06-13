@@ -24,7 +24,7 @@ if ($page === 'main') {
                     </li>
                     <li>
                     <div id='passwordField' style='display: none;'>
-                        <div class='input-wrapper'>
+                        <div class='input-pass-wrapper'>
                             <input type='password' id='passwordInput' placeholder='Enter password'>
                         </div>
                     </div>
@@ -39,7 +39,7 @@ if ($page === 'main') {
                             <span>Charging Logs</span></a>
                         </li>
                         <li>
-                            <a href='#'><span class='las la-cog'></span>
+                            <a href='config.php'><span class='las la-cog'></span>
                             <span>Configuration</span></a>
                         </li>
                         <li>
@@ -81,12 +81,8 @@ if ($page === 'main') {
                         <span>Charging Logs</span></a>
                     </li>
                     <li>
-                        <a href='charging_time.php'><span class='las la-stopwatch'></span>
-                        <span>Charging Time</span></a>
-                    </li>
-                    <li>
-                        <a href='number_of_tags.php'><span class='las la-tags'></span>
-                        <span>Number of Tags</span></a>
+                        <a href='config.php'><span class='las la-cog'></span>
+                        <span>Configuration</span></a>
                     </li>
                     <li>
                         <a href='report.php'><span class='las la-chart-line'></span>
@@ -125,12 +121,8 @@ if ($page === 'main') {
                         <span>Charging Logs</span></a>
                     </li>
                     <li>
-                        <a href='charging_time.php'><span class='las la-stopwatch'></span>
-                        <span>Charging Time</span></a>
-                    </li>
-                    <li>
-                        <a href='number_of_tags.php'><span class='las la-tags'></span>
-                        <span>Number of Tags</span></a>
+                        <a href='config.php'><span class='las la-cog'></span>
+                        <span>Configuration</span></a>
                     </li>
                     <li>
                         <a href='report.php'><span class='las la-chart-line'></span>
@@ -140,7 +132,7 @@ if ($page === 'main') {
             </div>
         </div>
     ";
-}  elseif ($page === 'chargeTime') {
+}  elseif ($page === 'config') {
     echo "
     <!-- sidebar toggle -->
         <input type='checkbox' id='nav-toggle' checked>
@@ -169,56 +161,8 @@ if ($page === 'main') {
                         <span>Charging Logs</span></a>
                     </li>
                     <li>
-                        <a class='active' href='charging_time.php'><span class='las la-stopwatch'></span>
-                        <span>Charging Time</span></a>
-                    </li>
-                    <li>
-                        <a href='number_of_tags.php'><span class='las la-tags'></span>
-                        <span>Number of Tags</span></a>
-                    </li>
-                    <li>
-                        <a href='report.php'><span class='las la-chart-line'></span>
-                        <span>Reports</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    ";
-}  elseif ($page === 'numTags') {
-    echo "
-    <!-- sidebar toggle -->
-        <input type='checkbox' id='nav-toggle' checked>
-
-        <!-- sidebar -->
-        <div class='sidebar'>
-            <div class='sidebar-brand'>
-                <h2><span class='las la-atom'></span> <span>AuLOG</span></h2>
-                <small>UPB Library Automated Charging Log System</small>
-            </div>
-
-            <div class='sidebar-menu'>
-                <ul>
-                    <li>
-                        <a href='main.php'><span class='las la-database'></span>
-                        <span>Dashboard</span></a>
-                    </li>
-                    <li>
-                    </li>
-                    <li>
-                        <a href='student.php'><span class='las la-users'></span>
-                        <span>Student Information</span></a>
-                    </li>
-                    <li>
-                        <a href='log.php'><span class='las la-list'></span>
-                        <span>Charging Logs</span></a>
-                    </li>
-                    <li>
-                        <a href='charging_time.php'><span class='las la-stopwatch'></span>
-                        <span>Charging Time</span></a>
-                    </li>
-                    <li>
-                        <a class='active' href='number_of_tags.php'><span class='las la-tags'></span>
-                        <span>Number of Tags</span></a>
+                        <a class='active' href='config.php'><span class='las la-cog'></span>
+                        <span>Configuration</span></a>
                     </li>
                     <li>
                         <a href='report.php'><span class='las la-chart-line'></span>
@@ -257,15 +201,51 @@ if ($page === 'main') {
                         <span>Charging Logs</span></a>
                     </li>
                     <li>
-                        <a href='charging_time.php'><span class='las la-stopwatch'></span>
-                        <span>Charging Time</span></a>
-                    </li>
-                    <li>
-                        <a href='number_of_tags.php'><span class='las la-tags'></span>
-                        <span>Number of Tags</span></a>
+                        <a href='config.php'><span class='las la-cog'></span>
+                        <span>Configuration</span></a>
                     </li>
                     <li>
                         <a class='active' href='report.php'><span class='las la-chart-line'></span>
+                        <span>Reports</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    ";
+}  elseif ($page === 'tagEdit') {
+    echo "
+    <!-- sidebar toggle -->
+        <input type='checkbox' id='nav-toggle' checked>
+
+        <!-- sidebar -->
+        <div class='sidebar'>
+            <div class='sidebar-brand'>
+                <h2><span class='las la-atom'></span> <span>AuLOG</span></h2>
+                <small>UPB Library Automated Charging Log System System</small>
+            </div>
+
+            <div class='sidebar-menu'>
+                <ul>
+                    <li>
+                        <a class='active' href='main.php'><span class='las la-database'></span>
+                        <span>Dashboard</span></a>
+                    </li>
+                    <li>
+                    </li>
+                    <li>
+                        <a href='student.php'><span class='las la-users'></span>
+                        <span>Student Information</span></a>
+                    </li>
+                    <li>
+                        <a href='log.php'><span class='las la-list'></span>
+                        <span>Charging Logs</span></a>
+                    </li>
+                    <li>
+                        <a href='config.php'><span class='las la-cog'></span>
+                        <span>Configuration</span></a>
+                    </li>
+                    <li>
+                        <a href='report.php'><span class='las la-chart-line'></span>
                         <span>Reports</span></a>
                     </li>
                 </ul>

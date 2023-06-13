@@ -97,29 +97,13 @@ if ($page === 'main') {
             </div>
         </header>
     ";
-} elseif ($page === 'chargeTime'){
+} elseif ($page === 'config'){
     echo "
         <header>
             <!-- sidebar label and page title -->
             <h2>
                 <label for='nav-toggle'> <span class='las la-bars'></span> </label>
-                Charging Time
-            </h2>
-            
-            <!-- site logo -->
-            <div class='header-wrapper'>
-                <img src='assets/img/upseal.png' alt='UPB Seal' width='50px'>
-                <h4>UP Baguio Library</h4>
-            </div>
-        </header>
-    ";
-} elseif ($page === 'numTags'){
-    echo "
-        <header>
-            <!-- sidebar label and page title -->
-            <h2>
-                <label for='nav-toggle'> <span class='las la-bars'></span> </label>
-                Number of Tags
+                Configuration
             </h2>
             
             <!-- site logo -->

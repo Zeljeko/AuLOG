@@ -93,6 +93,20 @@
             </main>
         </div>
         <script src="assets/table-sort-script.js"></script>
+        <script>
+        $(".edit").click(function(event) {
+            if (confirm("Are you sure you want to proceed to edit?")) {
+            } else {
+                event.preventDefault();
+            }
+        });
+        $(".end").click(function(event) {
+            if (confirm("Are you sure you want to proceed to delete?")) {
+            } else {
+                event.preventDefault();
+            }
+        });
+        </script>
     </body>
 </html>
 

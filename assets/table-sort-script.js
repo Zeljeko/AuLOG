@@ -37,6 +37,7 @@ $(document).ready(function() {
         var sortedData;
         if (sortDirection === 'asc') {
             sortedData = initialData.sort(function(a, b) {
+                console.log(a[columnIndex]+" "+b[columnIndex]);
                 return a[columnIndex].localeCompare(b[columnIndex]);
             });
             sortDirection = 'desc';

@@ -5,8 +5,6 @@
 		include 'includes/head.php'
 	?>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" ></script>
-    <script src="assets/chart-script.js"></script>
     </head>
 
     <body>
@@ -60,8 +58,8 @@
                             <span>Accepts RFID and Barcode</span>
                         </div>
                         <form class="form-input" id="rfid_form" action='db-requests/start_charging_session.php' method='post' autocomplete="off">
-                            <div class="input-wrapper">
-                                <input class="field_input" type = 'text' id = 'field_input' placeholder ="Place your ID onto the scanner">
+                            <div class="input-id-wrapper">
+                                <input class="field_input" type = 'password' id = 'field_input' placeholder ="Place your ID onto the scanner">
                                 <input class="field_sn" type = 'text' id = 'student_number' name = 'student_number' style="display: none;">
                                 <input class="field_rfid" type = 'text' id = 'rfid_tag' name = 'rfid_tag' style="display: none;">
                                 
@@ -82,18 +80,6 @@
                             </div>
                         </form>
                     </div>
-                    <!-- <div class="grid card card-single">
-                        <div class="card-header">
-                            <h2><span class="las la-users"></span> Daily Usage</h2>
-                        </div>
-                        <div id="chart-container-dashboard">
-                            <?php
-                            require_once 'functions.php';
-                            $dailyData = generateDailyReport();
-                            ?>
-                            <canvas id="dailyChart"></canvas>
-                        </div>
-                    </div> -->
                 </div>
 
                 <!-- table of active users -->
@@ -121,7 +107,6 @@
                                     <td>Time Elapsed</td>
                                 </tr>
                             </thead>
-  
                             <tbody> 
                             </tbody>
                         </table>
@@ -129,10 +114,6 @@
                 </div>
             </main>
         </div>
-        <script>
-        const dailyData = <?php echo json_encode($dailyData); ?>;
-        dailyChart("dailyChart", dailyData);
-        </script>
         <script src="assets/script.js"></script>
     </body>
 </html>

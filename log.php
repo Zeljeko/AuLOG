@@ -26,7 +26,7 @@
                         <!-- table title -->
                         <div class="card-header">
                             <h2><span class="las la-battery-full"></span> Charging Entries </h2>
-                            <h3><a href='db-requests/reset_history.php'><span class='las la-redo'></span> Reset Charge History </a> </h3>
+                            <h3><a id="reset" href='db-requests/reset_history.php'><span class='las la-redo'></span> Reset Charge History </a> </h3>
                         </div>
 
                         <!-- table content -->
@@ -94,5 +94,23 @@
             </main>
         </div>
         <script src="assets/table-sort-script.js"></script>
+        <script>
+            $("#reset").click(function(event) {
+                if (confirm("Are you sure you want to proceed to reset charging history?")) {
+                    if (confirm("Are you sure you want to delete? Proceeding will delete all charging logs and current sessions.")) {
+                } else {
+                    event.preventDefault();
+                    }
+                } else {
+                    event.preventDefault();
+                }
+            });
+            $(".edit").click(function(event) {
+            if (confirm("Are you sure you want to proceed to edit?")) {
+            } else {
+                event.preventDefault();
+            }
+            });
+        </script>
     </body>
 </html>
