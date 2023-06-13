@@ -48,7 +48,7 @@
                                 echo "<div>";
                                 echo "<select id='tag_number' name='tag_number'>";
                                 $tag_number = 1;
-                                while($tag_number <= 50) {
+                                while($tag_number <= 99) {
                                     if($tag_number != $number_of_tags)
                                         echo "<option value='$tag_number'>$tag_number</option>";
                                     else
