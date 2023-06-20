@@ -1054,7 +1054,8 @@
     }
 
     // Query to retrieve the charging log data including the student's college
-    $query = "SELECT cl.log_id, cl.student_number, s.college, cl.time_in, cl.time_out, cl.state
+    $query = "SELECT cl.log_id, cl.student_number, s.college, cl.time_in, cl.time_out,
+    TIMESTAMPDIFF(MINUTE, cl.time_in, cl.time_out) AS consumed
               FROM charging_log cl
               INNER JOIN student s ON cl.student_number = s.student_number";
 
@@ -1065,7 +1066,7 @@
     $file = fopen("reports.csv", 'w');
 
     // Write the CSV header
-    fputcsv($file, ['Log ID', 'Student Number', 'College', 'Time In', 'Time Out', 'State']);
+    fputcsv($file, ['Log ID', 'Student Number', 'College', 'Time In', 'Time Out', 'Charge Consumed']);
 
     // Write the data rows
     while ($row = $result->fetch_assoc()) {
