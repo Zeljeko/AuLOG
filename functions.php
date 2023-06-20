@@ -1042,4 +1042,136 @@
         // Close the database connection
         $conn->close();
     }
+
+    function exportChargingLogCSV()
+{
+    // Create a new database connection
+    $conn = connect();
+
+    // Check the connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Query to retrieve the charging log data including the student's college
+    $query = "SELECT cl.log_id, cl.student_number, s.college, cl.time_in, cl.time_out, cl.state
+              FROM charging_log cl
+              INNER JOIN student s ON cl.student_number = s.student_number";
+
+    // Execute the query
+    $result = $conn->query($query);
+
+    // Create the CSV file and write the data
+    $file = fopen("reports.csv", 'w');
+
+    // Write the CSV header
+    fputcsv($file, ['Log ID', 'Student Number', 'College', 'Time In', 'Time Out', 'State']);
+
+    // Write the data rows
+    while ($row = $result->fetch_assoc()) {
+        fputcsv($file, $row);
+    }
+
+    // Close the file
+    fclose($file);
+
+    // Close the database connection
+    $conn->close();
+}
+
+function sendEmailReport($adminEmail)
+{
+    // Create an instance of PHPMailer
+    $mail = new PHPMailer();
+
+    // Set mailer to use SMTP
+    $mail->isSMTP();
+
+    // Define SMTP host
+    $mail->Host = "smtp.gmail.com";
+
+    // Enable SMTP authentication
+    $mail->SMTPAuth = true;
+
+    // Set SMTP encryption type (ssl/tls)
+    $mail->SMTPSecure = "tls";
+
+    // Port to connect SMTP
+    $mail->Port = 587;
+
+    // Set Gmail username
+    // Use your own email
+    $mail->Username = "rpquinones@up.edu.ph";
+
+    // Set Gmail password
+    // Turn on 2-factor auth on your/organization email
+    // Go here https://myaccount.google.com/apppasswords
+    // Copy-paste app password to this string
+    $mail->Password = "sgreoylcwheqkoad";
+
+    // Email subject
+    $mail->Subject = "Charging Records and Remaining Time";
+
+    // Set sender email
+    $mail->setFrom('someone@up.edu.ph');
+
+    // Enable HTML
+    $mail->isHTML(true);
+
+    // Email body
+    $mail->Body = "Library Charging Hours Report";
+
+    // Add recipient
+    $mail->addAddress($adminEmail);
+
+    // Add attachment
+    $attachmentPath = 'reports.csv';
+    $mail->addAttachment($attachmentPath);
+
+    // Finally send email
+    if ($mail->send()) {
+        // Display alert for successful email sent
+        echo '<script language="javascript">';
+        echo 'alert("Charging Reports Sent to Admin Email")';
+        echo '</script>';
+        return true;
+    } else {
+        // Display alert for email not sent
+        echo "<script>alert('Email Not Sent');</script>";
+        return false;
+    }
+
+
+    // Closing SMTP connection
+    $mail->smtpClose();
+}
+
+function executeOncePerDay($adminEmail)
+{
+    $lastExecutionFile = "last_execution.txt";
+
+    // Check if the file exists
+    if (!file_exists($lastExecutionFile)) {
+        // Create the file and set the initial execution time to a past date
+        file_put_contents($lastExecutionFile, "1970-01-01");
+    }
+
+    $lastExecutionTime = file_get_contents($lastExecutionFile);
+
+    // Get the current date and time
+    $currentDate = date("Y-m-d");
+    $currentTime = date("H:i:s");
+
+    // Check if the function has already been executed today
+    if ($lastExecutionTime !== $currentDate) {
+        // Execute the function
+        sendEmailReport($adminEmail);
+
+        // Update the last execution time
+        file_put_contents($lastExecutionFile, $currentDate);
+    }
+}
+
+
+
 ?>

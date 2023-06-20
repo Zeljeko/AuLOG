@@ -2,7 +2,15 @@
 <html lang="en">
     <head>
     <?php
+    require_once 'functions.php';
+
+    //INSERT ADMIN EMAIL HERE
+    $adminEmail = "rpquinones@up.edu.ph";
+    executeOncePerDay($adminEmail);
+    ?>
+    <?php
 		include 'includes/head.php'
+
 	?>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     </head>
@@ -31,7 +39,6 @@
                         <div>
                             <h1>
                             <?php
-                            require 'functions.php';
                             $result = getActiveStudents();
                             echo count($result);
                             ?>

@@ -32,6 +32,9 @@
 
             <main>
                 <?php
+                    //INSERT ADMIN EMAIL HERE
+                    $adminEmail = "rpquinones@up.edu.ph";
+
                     require_once 'functions.php';
 
                     $dailyData = generateDailyReport();
@@ -51,7 +54,10 @@
                     $monthlyDataCAC = generateMonthlyReportCollege('Arts and Communication');
 
                     $allCollegesData = generateCollegeReport();
+
+                    exportChargingLogCSV();
                 ?>
+                <button onclick='<?php sendEmailReport($adminEmail); ?>'> Send Report to Admin </button>
                 <div class="cards-report">
                     <div class="grid card card-report">
                         <div class="card-header">
@@ -179,6 +185,7 @@
         </div>
     </body>
     <script>
+
     const dailyData = <?php echo json_encode($dailyData); ?>;
     dailyChart("dailyChart", dailyData);
     const weeklyData = <?php echo json_encode($weeklyData); ?>;
